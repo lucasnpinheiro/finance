@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\ValueObjects;
 
-use App\Domain\Exceptions\AccountException;
+use App\Domain\Exceptions\AccountNumberException;
 use BaseValueObject\IntValueObject;
 
-class Account extends IntValueObject
+class AccountNumber extends IntValueObject
 {
     public static function create(int $value): self
     {
@@ -17,7 +17,7 @@ class Account extends IntValueObject
     protected function validate(int $value): bool
     {
         if ($value <= 0) {
-            throw new AccountException();
+            throw new AccountNumberException();
         }
         return true;
     }
