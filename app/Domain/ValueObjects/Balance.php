@@ -27,7 +27,7 @@ class Balance extends MoneyValueObject
         return true;
     }
 
-    public function canDebit(Balance $amount): bool
+    public function canDebit(MoneyValueObject $amount): bool
     {
         return $this->value() >= $amount->value();
     }
