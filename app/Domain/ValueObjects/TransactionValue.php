@@ -7,7 +7,7 @@ namespace App\Domain\ValueObjects;
 use App\Domain\Exceptions\ValueException;
 use BaseValueObject\MoneyValueObject;
 
-class Balance extends MoneyValueObject
+class TransactionValue extends MoneyValueObject
 {
     /**
      * @param string $value
@@ -27,8 +27,4 @@ class Balance extends MoneyValueObject
         return true;
     }
 
-    public function canDebit(Balance $amount): bool
-    {
-        return $this->value() >= $amount->value();
-    }
 }

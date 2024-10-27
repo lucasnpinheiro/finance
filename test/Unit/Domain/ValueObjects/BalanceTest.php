@@ -2,11 +2,18 @@
 
 namespace HyperfTest\Unit\Domain\ValueObjects;
 
+use App\Domain\Exceptions\ValueException;
 use App\Domain\ValueObjects\Balance;
 use PHPUnit\Framework\TestCase;
 
 class BalanceTest extends TestCase
 {
+    public function testCreateTransactionValue()
+    {
+        $balance = Balance::create('100');
+        $this->assertInstanceOf(Balance::class, $balance);
+    }
+
     public function testBalanceCanBeCreated()
     {
         $balance = Balance::create('100');
@@ -33,5 +40,17 @@ class BalanceTest extends TestCase
         $balance2 = Balance::create('150');
 
         $this->assertFalse($balance1->canDebit($balance2));
+    }
+
+    public function testCreateTransactionValueWithInvalidValueThrowsException()
+    {
+        $this->expectException(ValueException::class);
+        Balance::create('invalid-value');
+    }
+
+    public function testValidateEmptyTransactionValue(): void
+    {
+        $balance = Balance::create('');
+        $this->assertEquals('0.00', $balance->value());
     }
 }
