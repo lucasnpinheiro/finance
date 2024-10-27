@@ -8,7 +8,7 @@ use BaseValueObject\StringValueObject;
 
 class Message extends StringValueObject
 {
-    public static function create(?string $value): self
+    public static function create(?string $value = null): self
     {
         if (is_null($value)) {
             return new self('');
