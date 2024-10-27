@@ -26,9 +26,9 @@ services:
       - redis-data:/data
     restart: "always"
 
-  hyperf-skeleton:
-    container_name: hyperf-skeleton
-    image: hyperf-skeleton
+  finance:
+    container_name: finance
+    image: finance
     build:
       context: .
     volumes:
