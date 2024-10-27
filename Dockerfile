@@ -13,6 +13,8 @@ LABEL maintainer="Hyperf Developers <group@hyperf.io>" version="1.0" license="MI
 ##
 # --build-arg timezone=Asia/Shanghai
 ARG timezone
+ARG PHP=83
+ENV PHP=$PHP
 
 ENV TIMEZONE=${timezone:-"Asia/Shanghai"} \
     APP_ENV=prod \
@@ -39,6 +41,15 @@ RUN set -ex \
     # ---------- clear works ----------
     && rm -rf /var/cache/apk/* /tmp/* /usr/share/man \
     && echo -e "\033[42;37m Build Completed :).\033[0m\n"
+
+RUN apk add --no-cache --upgrade \
+    && apk add --no-cache g++ make php${PHP}-dev php${PHP}-pear mpdecimal-dev \
+    && pecl${PHP} install decimal \
+    && apk del g++ make php${PHP}-dev php${PHP}-pear mpdecimal-dev \
+    && apk add --no-cache mpdecimal \
+    && echo "extension=decimal.so" >> /etc/php${PHP}/conf.d/99_php.ini \
+    && rm -rf /var/cache/apk/* /tmp/*
+
 
 WORKDIR /opt/www
 

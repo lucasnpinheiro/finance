@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "863eca05918d9feab1a901dce7a57845",
+    "content-hash": "b4de79be697cc570000af070f6cfb8af",
     "packages": [
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -3875,6 +3875,46 @@
                 }
             ],
             "time": "2024-01-19T12:39:49+00:00"
+        },
+        {
+            "name": "lucasnpinheiro/base-value-object",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lucasnpinheiro/base-value-object.git",
+                "reference": "2cec92150700d528256669ca1d0e7b787a8455fe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lucasnpinheiro/base-value-object/zipball/2cec92150700d528256669ca1d0e7b787a8455fe",
+                "reference": "2cec92150700d528256669ca1d0e7b787a8455fe",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BaseValueObject\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lucas Nunes Pinto Pinheiro",
+                    "email": "lucasnpinheiro@gmail.com"
+                }
+            ],
+            "description": "Base Value Object",
+            "support": {
+                "issues": "https://github.com/lucasnpinheiro/base-value-object/issues",
+                "source": "https://github.com/lucasnpinheiro/base-value-object/tree/v1.0.1"
+            },
+            "time": "2022-10-23T18:50:01+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -9705,12 +9745,12 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.1"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }
