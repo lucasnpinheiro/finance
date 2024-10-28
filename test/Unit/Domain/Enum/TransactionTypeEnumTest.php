@@ -7,18 +7,33 @@ use PHPUnit\Framework\TestCase;
 
 class TransactionTypeEnumTest extends TestCase
 {
-    public function testCanGetDepositValue()
+    public function testContainsReturnsTrueForValidValue(): void
     {
-        $this->assertEquals('DEPOSIT', TransactionTypeEnum::DEPOSIT->value);
+        $this->assertTrue(TransactionTypeEnum::contains(TransactionTypeEnum::DEPOSIT->value));
+        $this->assertTrue(TransactionTypeEnum::contains(TransactionTypeEnum::WITHDRAWAL->value));
+        $this->assertTrue(TransactionTypeEnum::contains(TransactionTypeEnum::TRANSFER->value));
     }
 
-    public function testCanGetWithdrawalValue()
+    public function testContainsReturnsFalseForInvalidValue(): void
     {
-        $this->assertEquals('WITHDRAWAL', TransactionTypeEnum::withdrawal->value);
+        $this->assertFalse(TransactionTypeEnum::contains('INVALID_VALUE'));
     }
 
-    public function testCanGetTransferValue()
+    public function testValuesReturnsArrayOfValues(): void
     {
-        $this->assertEquals('TRANSFER', TransactionTypeEnum::transfer->value);
+        $expectedValues = [
+            TransactionTypeEnum::DEPOSIT->value,
+            TransactionTypeEnum::WITHDRAWAL->value,
+            TransactionTypeEnum::TRANSFER->value,
+        ];
+
+        $this->assertEquals($expectedValues, TransactionTypeEnum::values());
+    }
+
+    public function testValueReturnsCorrectValue(): void
+    {
+        $this->assertEquals(TransactionTypeEnum::DEPOSIT->value, TransactionTypeEnum::DEPOSIT->value());
+        $this->assertEquals(TransactionTypeEnum::WITHDRAWAL->value, TransactionTypeEnum::WITHDRAWAL->value());
+        $this->assertEquals(TransactionTypeEnum::TRANSFER->value, TransactionTypeEnum::TRANSFER->value());
     }
 }
