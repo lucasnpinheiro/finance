@@ -9,5 +9,16 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
+use App\Actions\Contracts\TransactionActionInterface;
+use App\Actions\TransactionAction;
+use App\Repositories\AccountRepository;
+use App\Repositories\Contracts\AccountRepositoryInterface;
+use App\Repositories\Contracts\TransactionRepositoryInterface;
+use App\Repositories\TransactionRepository;
+
 return [
+    TransactionActionInterface::class => TransactionAction::class,
+    AccountRepositoryInterface::class => AccountRepository::class,
+    TransactionRepositoryInterface::class => TransactionRepository::class,
 ];
