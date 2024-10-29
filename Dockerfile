@@ -43,22 +43,23 @@ RUN set -ex \
     && echo -e "\033[42;37m Build Completed :).\033[0m\n"
 
 RUN apk add --no-cache --upgrade \
-    && apk add --no-cache g++ make php${PHP}-dev php${PHP}-pear mpdecimal-dev \
+    && apk add --no-cache gcc make libc-dev libtool autoconf automake build-base g++ php${PHP}-dev php${PHP}-pear mpdecimal-dev \
     && pecl${PHP} install decimal \
+    && pecl${PHP} install pcov \
     && apk del g++ make php${PHP}-dev php${PHP}-pear mpdecimal-dev \
     && apk add --no-cache mpdecimal \
     && echo "extension=decimal.so" >> /etc/php${PHP}/conf.d/99_php.ini \
+    && echo "extension=pcov.so" >> /etc/php${PHP}/conf.d/98_php.ini \
     && rm -rf /var/cache/apk/* /tmp/*
-
 
 WORKDIR /opt/www
 
-# Composer Cache
-# COPY ./composer.* /opt/www/
-# RUN composer install --no-dev --no-scripts
+RUN apk add --no-cache curl \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && chmod +x /usr/local/bin/composer
 
 COPY . /opt/www
-RUN composer install --no-dev -o && php bin/hyperf.php
+RUN composer install && composer update -W && php bin/hyperf.php
 
 EXPOSE 9501
 

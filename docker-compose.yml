@@ -29,6 +29,7 @@ services:
   finance:
     container_name: finance
     image: finance
+    tty: true
     build:
       context: .
     volumes:
