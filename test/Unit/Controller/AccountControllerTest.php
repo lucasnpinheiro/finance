@@ -10,7 +10,7 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace HyperfTest\Cases;
+namespace HyperfTest\Unit\Controller;
 
 use Hyperf\Testing\TestCase;
 
@@ -18,10 +18,10 @@ use Hyperf\Testing\TestCase;
  * @internal
  * @coversNothing
  */
-class ExampleTest extends TestCase
+class AccountControllerTest extends TestCase
 {
-    public function testExample()
+    public function testResponseSuccess()
     {
-        $this->get('/')->assertOk()->assertSee('Hyperf');
+        $this->post('/account')->assertOk();
     }
 }

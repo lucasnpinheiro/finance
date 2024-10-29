@@ -10,11 +10,12 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-use App\Controller\AccountController;
-use Hyperf\HttpServer\Router\Router;
+namespace App\Controller;
 
-Router::post( '/account', AccountController::class );
-
-Router::get('/favicon.ico', function () {
-    return '';
-});
+class AccountController extends AbstractController
+{
+    public function __invoke()
+    {
+        return [];
+    }
+}
