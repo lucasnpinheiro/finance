@@ -2,24 +2,24 @@
 
 namespace App\Domain\Entity;
 
-use App\Domain\ValueObjects\AccountNumber;
 use App\Domain\ValueObjects\Balance;
-use DateTime;
+use App\Domain\ValueObjects\Uuid;
 use DateTimeImmutable;
+use Exception;
 
 class Account
 {
     private function __construct(
-        private AccountNumber $accountNumber,
+        private Uuid $accountNumber,
         private Balance $balance,
         private DateTimeImmutable $createdAt,
-        private array $transactions = []
+        private Transactions $transactions
     ) {
     }
 
-    public static function create(AccountNumber $accountNumber, Balance $balance, DateTimeImmutable $createdAt): self
+    public static function create(Uuid $accountNumber, Balance $balance, DateTimeImmutable $createdAt): self
     {
-        return new self($accountNumber, $balance, $createdAt);
+        return new self($accountNumber, $balance, $createdAt, Transactions::create());
     }
 
     public function toArray(): array
@@ -28,11 +28,11 @@ class Account
             'account_number' => $this->accountNumber()->value(),
             'balance' => $this->balance()->value(),
             'created_at' => $this->createdAt()->format('Y-m-d H:i:s'),
-            'transactions' => $this->transactions()
+            'transactions' => $this->transactions()->toArray()
         ];
     }
 
-    public function accountNumber(): AccountNumber
+    public function accountNumber(): Uuid
     {
         return $this->accountNumber;
     }
@@ -47,23 +47,42 @@ class Account
         return $this->createdAt;
     }
 
-    public function transactions(): array
+    public function transactions(): Transactions
     {
         return $this->transactions;
     }
 
-    public function processTransaction(Transaction $transaction): bool
+    private function processTransaction(Transaction $transaction): void
     {
-        if (!$this->balance->canDebit($transaction->transactionValue())) {
-            return false;
+        if (!$this->balance()->canDebit($transaction->transactionValue())) {
+            $transaction->updateTransactionStatusFailed();
+            return;
         }
-        $this->balance->subtract($transaction->transactionValue());
-        $this->addTransaction($transaction);
-        return true;
+        $transaction->updateTransactionStatusCompleted();
+        $this->updateBalance($transaction);
     }
 
-    public function addTransaction(Transaction $transaction): void
+    private function updateBalance(Transaction $transaction): void
     {
-        $this->transactions[] = $transaction;
+        $this->balance = Balance::create($this->balance()->subtract($transaction->transactionValue())->value());
+    }
+
+    public function processTransactions(): void
+    {
+        foreach ($this->transactions() as $transaction) {
+            $this->processTransaction($transaction);
+        }
+
+        $transactionErrors = $this->transactions()->filter(fn(Transaction $transaction) => $transaction->isFailed());
+
+        if (!$transactionErrors->isEmpty()) {
+            throw new Exception('Insufficient balance for transaction');
+        }
+    }
+
+    public function addTransaction(Transaction $transaction): self
+    {
+        $this->transactions()->prepend($transaction);
+        return $this;
     }
 }

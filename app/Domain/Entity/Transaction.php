@@ -2,10 +2,11 @@
 
 namespace App\Domain\Entity;
 
+use App\Domain\Enum\TransactionStatusEnum;
 use App\Domain\Enum\TransactionTypeEnum;
 use App\Domain\ValueObjects\Message;
 use App\Domain\ValueObjects\TransactionValue;
-use DateTime;
+use App\Domain\ValueObjects\Uuid;
 use DateTimeImmutable;
 
 class Transaction
@@ -15,6 +16,8 @@ class Transaction
         private TransactionValue $transactionValue,
         private DateTimeImmutable $createdAt,
         private Message $message,
+        private Uuid $uuid,
+        private TransactionStatusEnum $transactionStatus = TransactionStatusEnum::IN_PROCESSING,
     ) {
     }
 
@@ -28,7 +31,8 @@ class Transaction
             $transactionType,
             $transactionValue,
             $createdAt,
-            $message === null ? Message::create() : $message
+            $message === null ? Message::create() : $message,
+            Uuid::random(),
         );
     }
 
@@ -40,7 +44,9 @@ class Transaction
     public function toArray(): array
     {
         return [
-            'transaction_type' => $this->transactionType()->value,
+            'uuid' => $this->uuid()->value(),
+            'transaction_type' => $this->transactionType()->value(),
+            'transaction_status' => $this->transactionStatus()->value(),
             'transaction_value' => $this->transactionValue()->value(),
             'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
             'message' => $this->message()->value(),
@@ -52,6 +58,11 @@ class Transaction
         return $this->transactionType;
     }
 
+    public function uuid(): Uuid
+    {
+        return $this->uuid;
+    }
+
     public function transactionValue(): TransactionValue
     {
         return $this->transactionValue;
@@ -60,6 +71,26 @@ class Transaction
     public function message(): Message
     {
         return $this->message;
+    }
+
+    public function transactionStatus(): TransactionStatusEnum
+    {
+        return $this->transactionStatus;
+    }
+
+    public function updateTransactionStatusFailed(): void
+    {
+        $this->transactionStatus = TransactionStatusEnum::FAILED;
+    }
+
+    public function updateTransactionStatusCompleted(): void
+    {
+        $this->transactionStatus = TransactionStatusEnum::COMPLETED;
+    }
+
+    public function isFailed(): bool
+    {
+        return $this->transactionStatus === TransactionStatusEnum::FAILED;
     }
 
 }
