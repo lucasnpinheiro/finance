@@ -26,6 +26,7 @@ class AppExceptionHandler extends ExceptionHandler
 
     public function handle(Throwable $throwable, ResponseInterface $response)
     {
+        $code = $throwable->getCode() ?: 500;
         $this->logger->error(
             sprintf(
                 '%s[%s] in %s',
@@ -35,11 +36,17 @@ class AppExceptionHandler extends ExceptionHandler
             )
         );
         $this->logger->error($throwable->getTraceAsString());
+        $data = json_encode([
+            'code' => $code,
+            'message' => $throwable->getMessage(),
+        ], JSON_UNESCAPED_UNICODE);
+
         return $response
             ->withHeader('Server', 'Hyperf')
-            ->withStatus(500)
+            ->withHeader('Content-Type', 'application/json; charset=utf-8')
+            ->withStatus($code)
             ->withBody(
-                new SwooleStream('Internal Server Error.')
+                new SwooleStream($data)
             );
     }
 
