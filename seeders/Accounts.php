@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Entity\Account;
+use App\Model\Account;
 use Hyperf\Database\Seeders\Seeder;
 
 class Accounts extends Seeder
@@ -17,7 +17,7 @@ class Accounts extends Seeder
         for ($i = 0; $i < 10; $i++) {
             Account::create([
                 'id' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
-                'balance' => rand(100, 1000) / 10,
+                'balance' => rand(100, 99999) / 10,
             ]);
         }
     }
