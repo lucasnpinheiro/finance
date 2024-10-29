@@ -30,6 +30,7 @@ services:
   finance:
     container_name: finance
     image: finance
+    entrypoint: ["php", "bin/hyperf.php", "server:watch"]
     tty: true
     build:
       context: .
