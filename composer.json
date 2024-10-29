@@ -74,7 +74,7 @@
             "rm -rf runtime/container"
         ],
         "test": "co-phpunit --prepend test/bootstrap.php --colors=always",
-        "coverage": "co-phpunit --prepend test/bootstrap.php --colors=always -c phpunit.xml --coverage-html coverage",
+        "coverage": "co-phpunit --prepend test/bootstrap.php --colors=always -c phpunit.xml --coverage-html reports",
         "cs-fix": "php-cs-fixer fix $1",
         "analyse": "phpstan analyse --memory-limit 300M",
         "start": [
