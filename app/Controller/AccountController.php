@@ -12,9 +12,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Request\AccountRequest;
+
 class AccountController extends AbstractController
 {
-    public function __invoke()
+    public function index(AccountRequest $request)
     {
         return [];
     }

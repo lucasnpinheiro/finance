@@ -1,27 +1,39 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 
 namespace HyperfTest\Unit\Controller;
 
-use Hyperf\Testing\TestCase;
+use App\Controller\AccountController;
+use App\Request\AccountRequest;
+use Mockery;
+use PHPUnit\Framework\TestCase;
 
-/**
- * @internal
- * @coversNothing
- */
 class AccountControllerTest extends TestCase
 {
-    public function testResponseSuccess()
+    protected AccountController $controller;
+
+    protected function setUp(): void
     {
-        $this->post('/account')->assertOk();
+        parent::setUp();
+
+        // Inicializa o controlador
+        $this->controller = new AccountController();
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
+
+    public function testIndex()
+    {
+        $request = Mockery::mock(AccountRequest::class);
+
+        $response = $this->controller->index($request);
+
+        $this->assertIsArray($response);
+        $this->assertEmpty($response);
     }
 }

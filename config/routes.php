@@ -13,7 +13,7 @@ declare(strict_types=1);
 use App\Controller\AccountController;
 use Hyperf\HttpServer\Router\Router;
 
-Router::post( '/account', AccountController::class );
+Router::post('/account', [AccountController::class,'index']);
 
 Router::get('/favicon.ico', function () {
     return '';
