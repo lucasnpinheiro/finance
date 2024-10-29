@@ -10,18 +10,10 @@ use Hyperf\DbConnection\Model\Model;
  */
 class Transaction extends Model
 {
-    /**
-     * The table associated with the model.
-     */
     protected ?string $table = 'transactions';
-
-    /**
-     * The attributes that are mass assignable.
-     */
     protected array $fillable = ['id', 'value', 'type', 'status', 'created_at', 'description'];
+    protected array $casts = [
+        'id' => 'string',
+    ];
 
-    /**
-     * The attributes that should be cast to native types.
-     */
-    protected array $casts = [];
 }
