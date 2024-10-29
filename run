@@ -26,6 +26,10 @@ case "$1" in
       echo "Executando cobertura no serviço finance..."
       docker exec -it finance bash
       ;;
+  logs)
+    echo "Executando cobertura no serviço finance..."
+    docker-compose logs finance -f
+    ;;
   *)
     echo "Comandos disponíveis:"
     echo "  start      - Inicia os serviços do Docker Compose"
