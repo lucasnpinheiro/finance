@@ -5,18 +5,19 @@ namespace App\Domain\Entity;
 use App\Domain\ValueObjects\AccountNumber;
 use App\Domain\ValueObjects\Balance;
 use DateTime;
+use DateTimeImmutable;
 
 class Account
 {
     private function __construct(
         private AccountNumber $accountNumber,
         private Balance $balance,
-        private DateTime $createdAt,
+        private DateTimeImmutable $createdAt,
         private array $transactions = []
     ) {
     }
 
-    public static function create(AccountNumber $accountNumber, Balance $balance, DateTime $createdAt): self
+    public static function create(AccountNumber $accountNumber, Balance $balance, DateTimeImmutable $createdAt): self
     {
         return new self($accountNumber, $balance, $createdAt);
     }
@@ -41,7 +42,7 @@ class Account
         return $this->balance;
     }
 
-    public function createdAt(): DateTime
+    public function createdAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }

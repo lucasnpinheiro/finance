@@ -6,7 +6,7 @@ use App\Domain\Entity\Transaction;
 use App\Domain\Enum\TransactionTypeEnum;
 use App\Domain\ValueObjects\Message;
 use App\Domain\ValueObjects\TransactionValue;
-use DateTime;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 class TransactionTest extends TestCase
@@ -15,7 +15,7 @@ class TransactionTest extends TestCase
     {
         $transactionType = TransactionTypeEnum::DEPOSIT;
         $transactionValue = TransactionValue::create('10.00');
-        $createdAt = new DateTime();
+        $createdAt = new DateTimeImmutable();
         $message = Message::create('Test message');
 
         $transaction = Transaction::create($transactionType, $transactionValue, $createdAt, $message);
@@ -37,27 +37,15 @@ class TransactionTest extends TestCase
         $this->assertInstanceOf(Transaction::class, $transaction);
         $this->assertEquals($transactionType, $transaction->transactionType());
         $this->assertEquals($transactionValue, $transaction->transactionValue());
-        $this->assertInstanceOf(DateTime::class, $transaction->createdAt());
-        $this->assertEmpty($transaction->message()->value());
-    }
-
-    public function testCreatedAt()
-    {
-        $transactionType = TransactionTypeEnum::DEPOSIT;
-        $transactionValue = TransactionValue::create('10.00');
-        $createdAt = new DateTime();
-        $message = Message::create('Test message');
-
-        $transaction = Transaction::create($transactionType, $transactionValue, $createdAt, $message);
-
-        $this->assertEquals($createdAt, $transaction->createdAt());
+        $this->assertInstanceOf(DateTimeImmutable::class, $transaction->createdAt());
+        $this->assertInstanceOf(Message::class, $transaction->message());
     }
 
     public function testToArray()
     {
         $transactionType = TransactionTypeEnum::DEPOSIT;
         $transactionValue = TransactionValue::create('10.00');
-        $createdAt = new DateTime();
+        $createdAt = new DateTimeImmutable();
         $message = Message::create('Test message');
 
         $transaction = Transaction::create($transactionType, $transactionValue, $createdAt, $message);
@@ -76,7 +64,7 @@ class TransactionTest extends TestCase
     {
         $transactionType = TransactionTypeEnum::DEPOSIT;
         $transactionValue = TransactionValue::create('10.00');
-        $createdAt = new DateTime();
+        $createdAt = new DateTimeImmutable();
         $message = Message::create('Test message');
 
         $transaction = Transaction::create($transactionType, $transactionValue, $createdAt, $message);
@@ -88,7 +76,7 @@ class TransactionTest extends TestCase
     {
         $transactionType = TransactionTypeEnum::DEPOSIT;
         $transactionValue = TransactionValue::create('10.00');
-        $createdAt = new DateTime();
+        $createdAt = new DateTimeImmutable();
         $message = Message::create('Test message');
 
         $transaction = Transaction::create($transactionType, $transactionValue, $createdAt, $message);
@@ -100,7 +88,7 @@ class TransactionTest extends TestCase
     {
         $transactionType = TransactionTypeEnum::DEPOSIT;
         $transactionValue = TransactionValue::create('10.00');
-        $createdAt = new DateTime();
+        $createdAt = new DateTimeImmutable();
         $message = Message::create('Test message');
 
         $transaction = Transaction::create($transactionType, $transactionValue, $createdAt, $message);

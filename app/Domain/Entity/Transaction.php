@@ -6,13 +6,14 @@ use App\Domain\Enum\TransactionTypeEnum;
 use App\Domain\ValueObjects\Message;
 use App\Domain\ValueObjects\TransactionValue;
 use DateTime;
+use DateTimeImmutable;
 
 class Transaction
 {
     private function __construct(
         private TransactionTypeEnum $transactionType,
         private TransactionValue $transactionValue,
-        private DateTime $createdAt,
+        private DateTimeImmutable $createdAt,
         private Message $message,
     ) {
     }
@@ -20,7 +21,7 @@ class Transaction
     public static function create(
         TransactionTypeEnum $transactionType,
         TransactionValue $transactionValue,
-        DateTime $createdAt = new DateTime(),
+        DateTimeImmutable $createdAt = new DateTimeImmutable(),
         ?Message $message = null
     ): self {
         return new self(
@@ -31,7 +32,7 @@ class Transaction
         );
     }
 
-    public function createdAt(): DateTime
+    public function createdAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }

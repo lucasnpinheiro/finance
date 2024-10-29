@@ -9,7 +9,7 @@ use App\Domain\ValueObjects\AccountNumber;
 use App\Domain\ValueObjects\Balance;
 use App\Domain\ValueObjects\Message;
 use App\Domain\ValueObjects\TransactionValue;
-use DateTime;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 class AccountTest extends TestCase
@@ -18,7 +18,7 @@ class AccountTest extends TestCase
     {
         $accountNumber = AccountNumber::create(123);
         $balance = Balance::create('100.00');
-        $createdAt = new DateTime();
+        $createdAt = new DateTimeImmutable();
         $account = Account::create($accountNumber, $balance, $createdAt);
 
         $this->assertInstanceOf(Account::class, $account);
@@ -32,7 +32,7 @@ class AccountTest extends TestCase
     {
         $accountNumber = AccountNumber::create(123);
         $balance = Balance::create('100.00');
-        $createdAt = new DateTime();
+        $createdAt = new DateTimeImmutable();
         $account = Account::create($accountNumber, $balance, $createdAt);
 
         $expectedArray = [
@@ -45,17 +45,36 @@ class AccountTest extends TestCase
         $this->assertEquals($expectedArray, $account->toArray());
     }
 
-    public function testProcessTransactionDebitSuccess()
+    public function testAddTransaction()
     {
         $accountNumber = AccountNumber::create(123);
         $balance = Balance::create('100.00');
-        $createdAt = new DateTime();
+        $createdAt = new DateTimeImmutable();
         $account = Account::create($accountNumber, $balance, $createdAt);
 
         $transaction = Transaction::create(
             TransactionTypeEnum::DEPOSIT,
             TransactionValue::create('50.00'),
-            new DateTime(),
+            new DateTimeImmutable(),
+            Message::create('Test message')
+        );
+
+        $account->addTransaction($transaction);
+
+        $this->assertCount(1, $account->transactions());
+    }
+
+    public function testProcessTransactionDebitSuccess()
+    {
+        $accountNumber = AccountNumber::create(123);
+        $balance = Balance::create('100.00');
+        $createdAt = new DateTimeImmutable();
+        $account = Account::create($accountNumber, $balance, $createdAt);
+
+        $transaction = Transaction::create(
+            TransactionTypeEnum::DEPOSIT,
+            TransactionValue::create('50.00'),
+            new DateTimeImmutable(),
             Message::create('Test message')
         );
 
@@ -66,35 +85,16 @@ class AccountTest extends TestCase
     {
         $accountNumber = AccountNumber::create(123);
         $balance = Balance::create('100.00');
-        $createdAt = new DateTime();
+        $createdAt = new DateTimeImmutable();
         $account = Account::create($accountNumber, $balance, $createdAt);
 
         $transaction = Transaction::create(
             TransactionTypeEnum::DEPOSIT,
             TransactionValue::create('150.00'),
-            new DateTime(),
+            new DateTimeImmutable(),
             Message::create('Test message')
         );
 
         $this->assertFalse($account->processTransaction($transaction));
-    }
-
-    public function testAddTransaction()
-    {
-        $accountNumber = AccountNumber::create(123);
-        $balance = Balance::create('100.00');
-        $createdAt = new DateTime();
-        $account = Account::create($accountNumber, $balance, $createdAt);
-
-        $transaction = Transaction::create(
-            TransactionTypeEnum::DEPOSIT,
-            TransactionValue::create('50.00'),
-            new DateTime(),
-            Message::create('Test message')
-        );
-
-        $account->addTransaction($transaction);
-
-        $this->assertCount(1, $account->transactions());
     }
 }
