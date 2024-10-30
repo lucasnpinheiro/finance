@@ -10,12 +10,11 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-use App\Controller\AccountController;
+use App\Controller\TransactionController;
 use Hyperf\HttpServer\Router\Router;
 
-Router::post('/deposit', [AccountController::class,'index']);
-Router::post('/transfer', [AccountController::class,'index']);
-Router::post('/sake', [AccountController::class,'index']);
+Router::post('/transaction', [TransactionController::class,'index']);
+Router::post('/transfer', [TransactionController::class,'index']);
 
 Router::get('/favicon.ico', function () {
     return '';

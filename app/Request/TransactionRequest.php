@@ -6,7 +6,7 @@ namespace App\Request;
 
 use Hyperf\Validation\Request\FormRequest;
 
-class AccountRequest extends FormRequest
+class TransactionRequest extends FormRequest
 {
     public function authorize(): bool
     {

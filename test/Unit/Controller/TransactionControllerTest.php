@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace HyperfTest\Unit\Controller;
 
 use App\Actions\Contracts\TransactionActionInterface;
-use App\Controller\AccountController;
+use App\Controller\TransactionController;
 use App\Domain\Entity\Account;
 use App\Domain\Factory\AccountFactory;
-use App\Request\AccountRequest;
+use App\Request\TransactionRequest;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 
-class AccountControllerTest extends TestCase
+class TransactionControllerTest extends TestCase
 {
-    protected AccountController $controller;
+    protected TransactionController $controller;
     protected TransactionActionInterface $transactionAction;
     protected AccountFactory $factory;
 
@@ -25,7 +25,7 @@ class AccountControllerTest extends TestCase
         $this->transactionAction = Mockery::mock(TransactionActionInterface::class);
         $this->factory = Mockery::mock(AccountFactory::class);
 
-        $this->controller = new AccountController($this->transactionAction, $this->factory);
+        $this->controller = new TransactionController($this->transactionAction, $this->factory);
     }
 
     protected function tearDown(): void
@@ -36,7 +36,7 @@ class AccountControllerTest extends TestCase
 
     public function testIndex()
     {
-        $request = Mockery::mock(AccountRequest::class);
+        $request = Mockery::mock(TransactionRequest::class);
         $request->shouldReceive('accountNumber')->andReturn('12345678-1234-1234-1234-123456789012');
         $request->shouldReceive('transactionType')->andReturn('deposit');
         $request->shouldReceive('transactionValue')->andReturn('100');

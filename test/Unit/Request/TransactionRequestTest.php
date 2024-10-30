@@ -2,7 +2,7 @@
 
 namespace HyperfTest\Unit\Request;
 
-use App\Request\AccountRequest;
+use App\Request\TransactionRequest;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Validation\ValidatorFactory;
 use Mockery;
@@ -10,9 +10,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class AccountRequestTest extends TestCase
+class TransactionRequestTest extends TestCase
 {
-    protected AccountRequest $request;
+    protected TransactionRequest $request;
 
     public function testAuthorize()
     {
@@ -63,7 +63,7 @@ class AccountRequestTest extends TestCase
 
         $serverRequest = Mockery::mock(ServerRequestInterface::class);
 
-        $this->request = new AccountRequest($container, $serverRequest);
+        $this->request = new TransactionRequest($container, $serverRequest);
     }
 
     protected function tearDown(): void

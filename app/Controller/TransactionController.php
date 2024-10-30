@@ -14,16 +14,16 @@ namespace App\Controller;
 
 use App\Actions\Contracts\TransactionActionInterface;
 use App\Domain\Factory\AccountFactory;
-use App\Request\AccountRequest;
+use App\Request\TransactionRequest;
 
-class AccountController extends AbstractController
+class TransactionController extends AbstractController
 {
     public function __construct(
         private TransactionActionInterface $transactionAction,
         private AccountFactory $factory
     ) {
     }
-    public function index(AccountRequest $request)
+    public function index(TransactionRequest $request)
     {
         $factory = $this->factory->create(
             $request->accountNumber(),
