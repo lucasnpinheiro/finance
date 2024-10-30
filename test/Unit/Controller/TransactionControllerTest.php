@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace HyperfTest\Unit\Controller;
 
-use App\Actions\Contracts\TransactionActionInterface;
+use App\Actions\Transaction\Contracts\TransactionActionInterface;
 use App\Controller\TransactionController;
 use App\Domain\Entity\Account;
 use App\Domain\Factory\AccountFactory;

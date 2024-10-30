@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Actions\Contracts\TransactionActionInterface;
+use App\Actions\Transaction\Contracts\TransactionActionInterface;
 use App\Domain\Factory\AccountFactory;
 use App\Request\TransactionRequest;
 

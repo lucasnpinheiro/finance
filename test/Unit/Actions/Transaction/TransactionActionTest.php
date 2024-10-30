@@ -1,8 +1,8 @@
 <?php
 
-namespace HyperfTest\Unit\Actions;
+namespace HyperfTest\Unit\Actions\Transaction;
 
-use App\Actions\TransactionAction;
+use App\Actions\Transaction\TransactionAction;
 use App\Repositories\Contracts\AccountRepositoryInterface;
 use App\Repositories\Contracts\TransactionRepositoryInterface;
 use HyperfTest\Stub\Domain\Entity\AccountStub;

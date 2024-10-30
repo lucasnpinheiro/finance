@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Contracts;
+namespace App\Actions\Transaction\Contracts;
 
 use App\Domain\Entity\Account;
 

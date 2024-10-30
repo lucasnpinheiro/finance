@@ -10,8 +10,8 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-use App\Actions\Contracts\TransactionActionInterface;
-use App\Actions\TransactionAction;
+use App\Actions\Transaction\Contracts\TransactionActionInterface;
+use App\Actions\Transaction\TransactionAction;
 use App\Repositories\AccountRepository;
 use App\Repositories\Contracts\AccountRepositoryInterface;
 use App\Repositories\Contracts\TransactionRepositoryInterface;

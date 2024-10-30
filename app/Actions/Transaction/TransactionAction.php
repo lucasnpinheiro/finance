@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\Transaction;
 
-use App\Actions\Contracts\TransactionActionInterface;
+use App\Actions\Transaction\Contracts\TransactionActionInterface;
 use App\Domain\Entity\Account;
 use App\Domain\Entity\Transaction;
 use App\Domain\Exceptions\InsufficientBalanceException;
 use App\Repositories\Contracts\AccountRepositoryInterface;
 use App\Repositories\Contracts\TransactionRepositoryInterface;
-use Throwable;
 
 class TransactionAction implements TransactionActionInterface
 {
