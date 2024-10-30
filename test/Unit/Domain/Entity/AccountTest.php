@@ -1,14 +1,13 @@
 <?php
 
 namespace HyperfTest\Unit\Domain\Entity;
-
 use App\Domain\Entity\Account;
 use App\Domain\Entity\Transaction;
-use App\Domain\Enum\TransactionTypeEnum;
-use App\Domain\ValueObjects\AccountNumber;
+use App\Domain\Entity\Transactions;
+use App\Domain\Exceptions\InsufficientBalanceException;
 use App\Domain\ValueObjects\Balance;
-use App\Domain\ValueObjects\Message;
 use App\Domain\ValueObjects\TransactionValue;
+use App\Domain\ValueObjects\Uuid;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
@@ -16,30 +15,33 @@ class AccountTest extends TestCase
 {
     public function testCreateAccount()
     {
-        $accountNumber = AccountNumber::create(123);
-        $balance = Balance::create('100.00');
+        $accountNumber = Uuid::random();
+        $balance = Balance::create(1000);
         $createdAt = new DateTimeImmutable();
+
         $account = Account::create($accountNumber, $balance, $createdAt);
 
         $this->assertInstanceOf(Account::class, $account);
         $this->assertEquals($accountNumber, $account->accountNumber());
         $this->assertEquals($balance, $account->balance());
         $this->assertEquals($createdAt, $account->createdAt());
-        $this->assertEmpty($account->transactions());
+        $this->assertInstanceOf(Transactions::class, $account->transactions());
     }
 
     public function testToArray()
     {
-        $accountNumber = AccountNumber::create(123);
-        $balance = Balance::create('100.00');
-        $createdAt = new DateTimeImmutable();
+        $accountNumber = Uuid::random();
+        $balance = Balance::create(500);
+        $createdAt = new DateTimeImmutable("2024-01-01 12:00:00");
+        $transactions = Transactions::create();
+
         $account = Account::create($accountNumber, $balance, $createdAt);
 
         $expectedArray = [
             'account_number' => $accountNumber->value(),
             'balance' => $balance->value(),
             'created_at' => $createdAt->format('Y-m-d H:i:s'),
-            'transactions' => [],
+            'transactions' => $transactions->toArray()
         ];
 
         $this->assertEquals($expectedArray, $account->toArray());
@@ -47,54 +49,44 @@ class AccountTest extends TestCase
 
     public function testAddTransaction()
     {
-        $accountNumber = AccountNumber::create(123);
-        $balance = Balance::create('100.00');
-        $createdAt = new DateTimeImmutable();
-        $account = Account::create($accountNumber, $balance, $createdAt);
-
-        $transaction = Transaction::create(
-            TransactionTypeEnum::DEPOSIT,
-            TransactionValue::create('50.00'),
-            new DateTimeImmutable(),
-            Message::create('Test message')
-        );
+        $account = Account::create(Uuid::random(), Balance::create(1000), new DateTimeImmutable());
+        $transaction = $this->createMock(Transaction::class);
 
         $account->addTransaction($transaction);
 
         $this->assertCount(1, $account->transactions());
+        $this->assertSame($transaction, $account->transactions()->first());
     }
 
-    public function testProcessTransactionDebitSuccess()
+    public function testProcessTransactionsWithSufficientBalance()
     {
-        $accountNumber = AccountNumber::create(123);
-        $balance = Balance::create('100.00');
-        $createdAt = new DateTimeImmutable();
-        $account = Account::create($accountNumber, $balance, $createdAt);
+        $balance = Balance::create('1000');
+        $account = Account::create(Uuid::random(), $balance, new DateTimeImmutable());
 
-        $transaction = Transaction::create(
-            TransactionTypeEnum::DEPOSIT,
-            TransactionValue::create('50.00'),
-            new DateTimeImmutable(),
-            Message::create('Test message')
-        );
+        $transaction = $this->createMock(Transaction::class);
+        $transaction->method('transactionValue')->willReturn(TransactionValue::create('200'));
+        $transaction->expects($this->once())->method('updateTransactionStatusCompleted');
 
-        $this->assertTrue($account->processTransaction($transaction));
+        $account->addTransaction($transaction);
+        $account->processTransactions();
+
+        $this->assertEquals(800, $account->balance()->value());
     }
 
-    public function testProcessTransactionDebitFailure()
+    public function testProcessTransactionsWithInsufficientBalance()
     {
-        $accountNumber = AccountNumber::create(123);
-        $balance = Balance::create('100.00');
-        $createdAt = new DateTimeImmutable();
-        $account = Account::create($accountNumber, $balance, $createdAt);
+        $this->expectException(InsufficientBalanceException::class);
 
-        $transaction = Transaction::create(
-            TransactionTypeEnum::DEPOSIT,
-            TransactionValue::create('150.00'),
-            new DateTimeImmutable(),
-            Message::create('Test message')
-        );
+        $balance = Balance::create('100');
+        $account = Account::create(Uuid::random(), $balance, new DateTimeImmutable());
 
-        $this->assertFalse($account->processTransaction($transaction));
+        $transaction = $this->createMock(Transaction::class);
+        $transaction->method('transactionValue')->willReturn(TransactionValue::create('200'));
+        $transaction->method('updateTransactionStatusFailed');
+        $transaction->method('isFailed')->willReturn(true);
+
+        $account->addTransaction($transaction);
+
+        $account->processTransactions();
     }
 }

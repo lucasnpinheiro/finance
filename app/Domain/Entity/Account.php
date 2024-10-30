@@ -2,6 +2,7 @@
 
 namespace App\Domain\Entity;
 
+use App\Domain\Exceptions\InsufficientBalanceException;
 use App\Domain\ValueObjects\Balance;
 use App\Domain\ValueObjects\Uuid;
 use DateTimeImmutable;
@@ -76,7 +77,7 @@ class Account
         $transactionErrors = $this->transactions()->filter(fn(Transaction $transaction) => $transaction->isFailed());
 
         if (!$transactionErrors->isEmpty()) {
-            throw new Exception('Insufficient balance for transaction');
+            throw new InsufficientBalanceException();
         }
     }
 
