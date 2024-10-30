@@ -9,9 +9,13 @@ use DateTimeImmutable;
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
+    public function __construct(public \App\Model\Transaction $transactionModel)
+    {
+    }
+
     public function save(Uuid $accountNumber, Transaction $transaction): void
     {
-        \App\Model\Transaction::insert([
+        $this->transactionModel::insert([
             'id' => $transaction->uuid()->value(),
             'account_id' => $accountNumber->value(),
             'type' => $transaction->transactionType()->value(),
