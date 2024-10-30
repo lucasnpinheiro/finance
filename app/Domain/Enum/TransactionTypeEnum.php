@@ -5,7 +5,7 @@ namespace App\Domain\Enum;
 enum TransactionTypeEnum: string
 {
     case DEPOSIT = 'DEPOSIT';
-    case WITHDRAWAL = 'WITHDRAWAL';
+    case SAKE = 'SAKE';
     case TRANSFER = 'TRANSFER';
 
     public static function contains(string $value): bool

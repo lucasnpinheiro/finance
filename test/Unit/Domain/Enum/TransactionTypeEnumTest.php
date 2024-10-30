@@ -11,7 +11,7 @@ class TransactionTypeEnumTest extends TestCase
     public function testContainsReturnsTrueForValidValue(): void
     {
         $this->assertTrue(TransactionTypeEnum::contains(TransactionTypeEnum::DEPOSIT->value));
-        $this->assertTrue(TransactionTypeEnum::contains(TransactionTypeEnum::WITHDRAWAL->value));
+        $this->assertTrue(TransactionTypeEnum::contains(TransactionTypeEnum::SAKE->value));
         $this->assertTrue(TransactionTypeEnum::contains(TransactionTypeEnum::TRANSFER->value));
     }
 
@@ -24,7 +24,7 @@ class TransactionTypeEnumTest extends TestCase
     {
         $expectedValues = [
             TransactionTypeEnum::DEPOSIT->value,
-            TransactionTypeEnum::WITHDRAWAL->value,
+            TransactionTypeEnum::SAKE->value,
             TransactionTypeEnum::TRANSFER->value,
         ];
 
@@ -34,14 +34,14 @@ class TransactionTypeEnumTest extends TestCase
     public function testValueReturnsCorrectValue(): void
     {
         $this->assertEquals(TransactionTypeEnum::DEPOSIT->value, TransactionTypeEnum::DEPOSIT->value());
-        $this->assertEquals(TransactionTypeEnum::WITHDRAWAL->value, TransactionTypeEnum::WITHDRAWAL->value());
+        $this->assertEquals(TransactionTypeEnum::SAKE->value, TransactionTypeEnum::SAKE->value());
         $this->assertEquals(TransactionTypeEnum::TRANSFER->value, TransactionTypeEnum::TRANSFER->value());
     }
 
     public function testCreateReturnsEnumForValidValue(): void
     {
         $this->assertSame(TransactionTypeEnum::DEPOSIT, TransactionTypeEnum::create('deposit'));
-        $this->assertSame(TransactionTypeEnum::WITHDRAWAL, TransactionTypeEnum::create('withdrawal'));
+        $this->assertSame(TransactionTypeEnum::SAKE, TransactionTypeEnum::create('SAKE'));
         $this->assertSame(TransactionTypeEnum::TRANSFER, TransactionTypeEnum::create('transfer'));
     }
 
