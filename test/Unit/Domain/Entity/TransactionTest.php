@@ -1,8 +1,8 @@
 <?php
 
 namespace HyperfTest\Unit\Domain\Entity;
-
 use App\Domain\Entity\Transaction;
+use App\Domain\Enum\TransactionStatusEnum;
 use App\Domain\Enum\TransactionTypeEnum;
 use App\Domain\ValueObjects\Message;
 use App\Domain\ValueObjects\TransactionValue;
@@ -14,9 +14,9 @@ class TransactionTest extends TestCase
     public function testCreateTransaction()
     {
         $transactionType = TransactionTypeEnum::DEPOSIT;
-        $transactionValue = TransactionValue::create('10.00');
+        $transactionValue = TransactionValue::create(100);
         $createdAt = new DateTimeImmutable();
-        $message = Message::create('Test message');
+        $message = Message::create("Test message");
 
         $transaction = Transaction::create($transactionType, $transactionValue, $createdAt, $message);
 
@@ -25,33 +25,27 @@ class TransactionTest extends TestCase
         $this->assertEquals($transactionValue, $transaction->transactionValue());
         $this->assertEquals($createdAt, $transaction->createdAt());
         $this->assertEquals($message, $transaction->message());
-    }
-
-    public function testCreateTransactionWithDefaultValues()
-    {
-        $transactionType = TransactionTypeEnum::DEPOSIT;
-        $transactionValue = TransactionValue::create('10.00');
-
-        $transaction = Transaction::create($transactionType, $transactionValue);
-
-        $this->assertInstanceOf(Transaction::class, $transaction);
-        $this->assertEquals($transactionType, $transaction->transactionType());
-        $this->assertEquals($transactionValue, $transaction->transactionValue());
-        $this->assertInstanceOf(DateTimeImmutable::class, $transaction->createdAt());
-        $this->assertInstanceOf(Message::class, $transaction->message());
+        $this->assertEquals(TransactionStatusEnum::IN_PROCESSING, $transaction->transactionStatus());
     }
 
     public function testToArray()
     {
         $transactionType = TransactionTypeEnum::DEPOSIT;
-        $transactionValue = TransactionValue::create('10.00');
-        $createdAt = new DateTimeImmutable();
-        $message = Message::create('Test message');
+        $transactionValue = TransactionValue::create(100);
+        $createdAt = new DateTimeImmutable("2024-01-01 12:00:00");
+        $message = Message::create("Test message");
 
-        $transaction = Transaction::create($transactionType, $transactionValue, $createdAt, $message);
+        $transaction = Transaction::create(
+            $transactionType,
+            $transactionValue,
+            $createdAt,
+            $message
+        );
 
         $expectedArray = [
-            'transaction_type' => $transactionType->value,
+            'uuid' => $transaction->uuid()->value(),
+            'transaction_type' => $transactionType->value(),
+            'transaction_status' => TransactionStatusEnum::IN_PROCESSING->value(),
             'transaction_value' => $transactionValue->value(),
             'created_at' => $createdAt->format('Y-m-d H:i:s'),
             'message' => $message->value(),
@@ -60,39 +54,38 @@ class TransactionTest extends TestCase
         $this->assertEquals($expectedArray, $transaction->toArray());
     }
 
-    public function testTransactionType()
+    public function testUpdateTransactionStatusFailed()
     {
-        $transactionType = TransactionTypeEnum::DEPOSIT;
-        $transactionValue = TransactionValue::create('10.00');
-        $createdAt = new DateTimeImmutable();
-        $message = Message::create('Test message');
+        $transaction = Transaction::create(
+            TransactionTypeEnum::DEPOSIT,
+            TransactionValue::create(100),
+        );
 
-        $transaction = Transaction::create($transactionType, $transactionValue, $createdAt, $message);
-
-        $this->assertEquals($transactionType, $transaction->transactionType());
+        $transaction->updateTransactionStatusFailed();
+        $this->assertEquals(TransactionStatusEnum::FAILED, $transaction->transactionStatus());
     }
 
-    public function testTransactionValue()
+    public function testUpdateTransactionStatusCompleted()
     {
-        $transactionType = TransactionTypeEnum::DEPOSIT;
-        $transactionValue = TransactionValue::create('10.00');
-        $createdAt = new DateTimeImmutable();
-        $message = Message::create('Test message');
+        $transaction = Transaction::create(
+            TransactionTypeEnum::DEPOSIT,
+            TransactionValue::create(200),
+        );
 
-        $transaction = Transaction::create($transactionType, $transactionValue, $createdAt, $message);
-
-        $this->assertEquals($transactionValue, $transaction->transactionValue());
+        $transaction->updateTransactionStatusCompleted();
+        $this->assertEquals(TransactionStatusEnum::COMPLETED, $transaction->transactionStatus());
     }
 
-    public function testMessage()
+    public function testIsFailed()
     {
-        $transactionType = TransactionTypeEnum::DEPOSIT;
-        $transactionValue = TransactionValue::create('10.00');
-        $createdAt = new DateTimeImmutable();
-        $message = Message::create('Test message');
+        $transaction = Transaction::create(
+            TransactionTypeEnum::DEPOSIT,
+            TransactionValue::create(150),
+        );
 
-        $transaction = Transaction::create($transactionType, $transactionValue, $createdAt, $message);
+        $this->assertFalse($transaction->isFailed());
 
-        $this->assertEquals($message, $transaction->message());
+        $transaction->updateTransactionStatusFailed();
+        $this->assertTrue($transaction->isFailed());
     }
 }
