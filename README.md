@@ -11,7 +11,7 @@ Implementação de teste para projeto Finance
 
 ## Iniciar projeto
 
-Para facilitar o inicialização do projeto foi criado um arquivo na raiz do projeto chamado run.
+Para facilitar a inicialização do projeto foi criado um arquivo na raiz do projeto chamado run.
 
 - Dar permissão de execução do arquivo.
 ```bash
