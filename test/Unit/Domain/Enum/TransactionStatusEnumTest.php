@@ -4,6 +4,7 @@ namespace HyperfTest\Unit\Domain\Enum;
 
 use App\Domain\Enum\TransactionStatusEnum;
 use PHPUnit\Framework\TestCase;
+use ValueError;
 
 class TransactionStatusEnumTest extends TestCase
 {
@@ -35,5 +36,18 @@ class TransactionStatusEnumTest extends TestCase
         $this->assertEquals(TransactionStatusEnum::IN_PROCESSING->value, TransactionStatusEnum::IN_PROCESSING->value());
         $this->assertEquals(TransactionStatusEnum::COMPLETED->value, TransactionStatusEnum::COMPLETED->value());
         $this->assertEquals(TransactionStatusEnum::FAILED->value, TransactionStatusEnum::FAILED->value());
+    }
+
+    public function testCreateReturnsEnumForValidValue(): void
+    {
+        $this->assertSame(TransactionStatusEnum::IN_PROCESSING, TransactionStatusEnum::create('in processing'));
+        $this->assertSame(TransactionStatusEnum::COMPLETED, TransactionStatusEnum::create('completed'));
+        $this->assertSame(TransactionStatusEnum::FAILED, TransactionStatusEnum::create('failed'));
+    }
+
+    public function testCreateThrowsExceptionForInvalidValue(): void
+    {
+        $this->expectException(ValueError::class);
+        TransactionStatusEnum::create('INVALID_VALUE');
     }
 }

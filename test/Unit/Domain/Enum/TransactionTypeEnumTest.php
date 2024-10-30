@@ -4,6 +4,7 @@ namespace HyperfTest\Unit\Domain\Enum;
 
 use App\Domain\Enum\TransactionTypeEnum;
 use PHPUnit\Framework\TestCase;
+use ValueError;
 
 class TransactionTypeEnumTest extends TestCase
 {
@@ -35,5 +36,18 @@ class TransactionTypeEnumTest extends TestCase
         $this->assertEquals(TransactionTypeEnum::DEPOSIT->value, TransactionTypeEnum::DEPOSIT->value());
         $this->assertEquals(TransactionTypeEnum::WITHDRAWAL->value, TransactionTypeEnum::WITHDRAWAL->value());
         $this->assertEquals(TransactionTypeEnum::TRANSFER->value, TransactionTypeEnum::TRANSFER->value());
+    }
+
+    public function testCreateReturnsEnumForValidValue(): void
+    {
+        $this->assertSame(TransactionTypeEnum::DEPOSIT, TransactionTypeEnum::create('deposit'));
+        $this->assertSame(TransactionTypeEnum::WITHDRAWAL, TransactionTypeEnum::create('withdrawal'));
+        $this->assertSame(TransactionTypeEnum::TRANSFER, TransactionTypeEnum::create('transfer'));
+    }
+
+    public function testCreateThrowsExceptionForInvalidValue(): void
+    {
+        $this->expectException(ValueError::class);
+        TransactionTypeEnum::create('INVALID_VALUE');
     }
 }
