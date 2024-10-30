@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Unit\Domain\Entity;
 
 use App\Domain\Entity\Account;
@@ -34,7 +36,7 @@ class AccountTest extends TestCase
     {
         $accountNumber = Uuid::random();
         $balance = Balance::create(500);
-        $createdAt = new DateTimeImmutable("2024-01-01 12:00:00");
+        $createdAt = new DateTimeImmutable('2024-01-01 12:00:00');
         $transactions = Transactions::create();
 
         $account = Account::create($accountNumber, $balance, $createdAt);
@@ -43,7 +45,7 @@ class AccountTest extends TestCase
             'account_number' => $accountNumber->value(),
             'balance' => $balance->value(),
             'created_at' => $createdAt->format('Y-m-d H:i:s'),
-            'transactions' => $transactions->toArray()
+            'transactions' => $transactions->toArray(),
         ];
 
         $this->assertEquals($expectedArray, $account->toArray());

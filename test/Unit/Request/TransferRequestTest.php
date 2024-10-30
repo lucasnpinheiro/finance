@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Unit\Request;
 
 use App\Request\TransferRequest;
@@ -13,6 +15,23 @@ use Psr\Http\Message\ServerRequestInterface;
 class TransferRequestTest extends TestCase
 {
     protected TransferRequest $request;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $container = Mockery::mock(ContainerInterface::class);
+
+        $serverRequest = Mockery::mock(ServerRequestInterface::class);
+
+        $this->request = new TransferRequest($container, $serverRequest);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
 
     public function testAuthorize()
     {
@@ -53,22 +72,5 @@ class TransferRequestTest extends TestCase
         $validator = $validatorFactory->make($validData, $this->request->rules());
 
         $this->assertTrue($validator->passes());
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $container = Mockery::mock(ContainerInterface::class);
-
-        $serverRequest = Mockery::mock(ServerRequestInterface::class);
-
-        $this->request = new TransferRequest($container, $serverRequest);
-    }
-
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        parent::tearDown();
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace HyperfTest\Unit\Controller;
 
-
 use App\Actions\Transfer\Contracts\TransferActionInterface;
 use App\Controller\TransferController;
 use App\Domain\Entity\AccountTransfer;
@@ -16,8 +15,26 @@ use PHPUnit\Framework\TestCase;
 class TransferControllerTest extends TestCase
 {
     protected TransferController $controller;
+
     protected TransferActionInterface $transferAction;
+
     protected TransferFactory $factory;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->transferAction = Mockery::mock(TransferActionInterface::class);
+        $this->factory = Mockery::mock(TransferFactory::class);
+
+        $this->controller = new TransferController($this->transferAction, $this->factory);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Mockery::close();
+    }
 
     public function testIndex()
     {
@@ -41,21 +58,5 @@ class TransferControllerTest extends TestCase
         $result = $this->controller->index($request);
 
         $this->assertEquals(['success' => true], $result);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->transferAction = Mockery::mock(TransferActionInterface::class);
-        $this->factory = Mockery::mock(TransferFactory::class);
-
-        $this->controller = new TransferController($this->transferAction, $this->factory);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        Mockery::close();
     }
 }

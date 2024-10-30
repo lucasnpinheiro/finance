@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Unit\Repositories;
 
 use App\Domain\Entity\Account;
@@ -13,7 +15,22 @@ use PHPUnit\Framework\TestCase;
 class AccountRepositoryTest extends TestCase
 {
     protected AccountRepository $accountRepository;
+
     protected \App\Model\Account $mockAccountModel;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockAccountModel = Mockery::mock(\App\Model\Account::class);
+
+        $this->accountRepository = new AccountRepository($this->mockAccountModel);
+    }
+
+    public function tearDown(): void
+    {
+        Mockery::close();
+    }
 
     public function testFindAccountByIdReturnsAccountWhenExists()
     {
@@ -24,7 +41,7 @@ class AccountRepositoryTest extends TestCase
 
         $mockAccountModel->shouldReceive('first')
             ->andReturn(
-                (object)[
+                (object) [
                     'id' => '68c2c56d-8310-4628-b886-a82fccc289f5',
                     'balance' => '100.00',
                     'created_at' => (new DateTimeImmutable())->format('Y-m-d H:i:s'),
@@ -62,19 +79,5 @@ class AccountRepositoryTest extends TestCase
         $this->accountRepository->save($account);
 
         $this->expectNotToPerformAssertions();
-    }
-
-    public function tearDown(): void
-    {
-        Mockery::close();
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->mockAccountModel = Mockery::mock(\App\Model\Account::class);
-
-        $this->accountRepository = new AccountRepository($this->mockAccountModel);
     }
 }

@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+
 namespace HyperfTest\Unit\Domain\ValueObjects;
 
 use App\Domain\Exceptions\ValueException;
@@ -32,9 +35,3 @@ class TransactionValueTest extends TestCase
         $this->assertEquals('0.00', $transactionValue->value());
     }
 }
-
-
-
-
-
-

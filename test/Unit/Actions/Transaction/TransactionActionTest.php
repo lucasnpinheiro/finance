@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Unit\Actions\Transaction;
 
 use App\Actions\Transaction\TransactionAction;
@@ -11,8 +13,21 @@ use PHPUnit\Framework\TestCase;
 class TransactionActionTest extends TestCase
 {
     private TransactionAction $transactionAction;
+
     private AccountRepositoryInterface $accountRepository;
+
     private TransactionRepositoryInterface $transactionRepository;
+
+    protected function setUp(): void
+    {
+        $this->accountRepository = $this->createMock(AccountRepositoryInterface::class);
+        $this->transactionRepository = $this->createMock(TransactionRepositoryInterface::class);
+
+        $this->transactionAction = new TransactionAction(
+            $this->accountRepository,
+            $this->transactionRepository
+        );
+    }
 
     public function testHandleProcessesTransactionsSuccessfully()
     {
@@ -32,16 +47,5 @@ class TransactionActionTest extends TestCase
 
         $result = $this->transactionAction->handler($account);
         $this->assertEquals($account, $result);
-    }
-
-    protected function setUp(): void
-    {
-        $this->accountRepository = $this->createMock(AccountRepositoryInterface::class);
-        $this->transactionRepository = $this->createMock(TransactionRepositoryInterface::class);
-
-        $this->transactionAction = new TransactionAction(
-            $this->accountRepository,
-            $this->transactionRepository
-        );
     }
 }

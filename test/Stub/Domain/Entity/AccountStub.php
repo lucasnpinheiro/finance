@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Stub\Domain\Entity;
 
 use App\Domain\Entity\Account;

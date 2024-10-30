@@ -15,7 +15,9 @@ use PHPUnit\Framework\TestCase;
 class TransactionControllerTest extends TestCase
 {
     protected TransactionController $controller;
+
     protected TransactionActionInterface $transactionAction;
+
     protected AccountFactory $factory;
 
     protected function setUp(): void

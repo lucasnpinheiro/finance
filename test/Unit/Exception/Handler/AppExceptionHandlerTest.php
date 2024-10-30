@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Unit\Exception\Handler;
 
 use App\Exception\Handler\AppExceptionHandler;

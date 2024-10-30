@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Unit\Domain\Entity;
 
 use App\Domain\Entity\Transaction;

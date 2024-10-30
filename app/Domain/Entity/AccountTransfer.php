@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Entity;
 
 use App\Domain\Exceptions\InsufficientBalanceException;
@@ -25,7 +27,7 @@ class AccountTransfer
     {
         return [
             'account_origin' => $this->accountOrigin()->toArray(),
-            'account_destination' => $this->accountDestination()->toArray()
+            'account_destination' => $this->accountDestination()->toArray(),
         ];
     }
 

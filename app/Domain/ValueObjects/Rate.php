@@ -10,12 +10,11 @@ use BaseValueObject\MoneyValueObject;
 class Rate extends MoneyValueObject
 {
     /**
-     * @param string $value
      * @return static
      */
-    public static function create(string $value): self
+    public static function create(float|string $value): self
     {
-        return new self($value);
+        return new self((string)$value);
     }
 
     protected function validate(string $value): bool
@@ -26,5 +25,4 @@ class Rate extends MoneyValueObject
         }
         return true;
     }
-
 }

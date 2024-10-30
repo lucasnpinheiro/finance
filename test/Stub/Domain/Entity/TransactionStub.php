@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Stub\Domain\Entity;
 
 use App\Domain\Entity\Transaction;
@@ -15,7 +17,7 @@ class TransactionStub
         return Transaction::create(
             TransactionTypeEnum::DEPOSIT,
             TransactionValue::create('10.00'),
-            (new DateTimeImmutable()),
+            new DateTimeImmutable(),
             Message::create('')
         );
     }
@@ -25,7 +27,7 @@ class TransactionStub
         $transaction = Transaction::create(
             TransactionTypeEnum::DEPOSIT,
             TransactionValue::create('10.00'),
-            (new DateTimeImmutable()),
+            new DateTimeImmutable(),
             Message::create('')
         );
 
@@ -39,7 +41,7 @@ class TransactionStub
         $transaction = Transaction::create(
             TransactionTypeEnum::DEPOSIT,
             TransactionValue::create('10.00'),
-            (new DateTimeImmutable()),
+            new DateTimeImmutable(),
             Message::create('')
         );
 
@@ -53,7 +55,7 @@ class TransactionStub
         $transaction = Transaction::create(
             TransactionTypeEnum::DEPOSIT,
             TransactionValue::create('10.00'),
-            (new DateTimeImmutable()),
+            new DateTimeImmutable(),
             Message::create('')
         );
 
@@ -67,7 +69,7 @@ class TransactionStub
         $transaction = Transaction::create(
             TransactionTypeEnum::SAKE,
             TransactionValue::create('10.00'),
-            (new DateTimeImmutable()),
+            new DateTimeImmutable(),
             Message::create('')
         );
 

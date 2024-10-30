@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Unit\Domain\Factory;
 
 use App\Domain\Entity\Account;
@@ -15,7 +17,17 @@ use ValueError;
 class AccountFactoryTest extends TestCase
 {
     private AccountFactory $accountFactory;
+
     private AccountRepositoryInterface $accountRepository;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->accountRepository = $this->createMock(AccountRepositoryInterface::class);
+
+        $this->accountFactory = new AccountFactory($this->accountRepository);
+    }
 
     public function testCreateAccountWithTransaction(): void
     {
@@ -94,14 +106,5 @@ class AccountFactoryTest extends TestCase
 
         $expectedValueAfterFee = TransactionSake::calculateFee($transaction)->transactionValue()->value();
         $this->assertEquals($expectedValueAfterFee, $transaction->transactionValue()->value());
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->accountRepository = $this->createMock(AccountRepositoryInterface::class);
-
-        $this->accountFactory = new AccountFactory($this->accountRepository);
     }
 }

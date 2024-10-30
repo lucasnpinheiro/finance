@@ -1,7 +1,8 @@
 <?php
 
-namespace HyperfTest\Unit\Domain\Factory;
+declare(strict_types=1);
 
+namespace HyperfTest\Unit\Domain\Factory;
 
 use App\Domain\Entity\Account;
 use App\Domain\Entity\AccountTransfer;

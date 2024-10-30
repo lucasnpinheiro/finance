@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Unit\Actions\Transfer;
 
 use App\Actions\Transfer\TransferAction;
@@ -15,8 +17,17 @@ use PHPUnit\Framework\TestCase;
 class TransferActionTest extends TestCase
 {
     private $accountRepository;
+
     private $transactionRepository;
+
     private $transferAction;
+
+    protected function setUp(): void
+    {
+        $this->accountRepository = Mockery::mock(AccountRepositoryInterface::class);
+        $this->transactionRepository = Mockery::mock(TransactionRepositoryInterface::class);
+        $this->transferAction = new TransferAction($this->accountRepository, $this->transactionRepository);
+    }
 
     public function testHandlerSuccess()
     {
@@ -67,12 +78,5 @@ class TransferActionTest extends TestCase
         $this->expectException(InsufficientBalanceException::class);
 
         $this->transferAction->handler($accountTransfer);
-    }
-
-    protected function setUp(): void
-    {
-        $this->accountRepository = Mockery::mock(AccountRepositoryInterface::class);
-        $this->transactionRepository = Mockery::mock(TransactionRepositoryInterface::class);
-        $this->transferAction = new TransferAction($this->accountRepository, $this->transactionRepository);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Unit\Repositories;
 
 use App\Domain\Entity\Transaction;
@@ -16,7 +18,22 @@ use PHPUnit\Framework\TestCase;
 class TransactionRepositoryTest extends TestCase
 {
     protected TransactionRepository $transactionRepository;
+
     protected \App\Model\Transaction $mockTransactionModel;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockTransactionModel = Mockery::mock(\App\Model\Transaction::class);
+
+        $this->transactionRepository = new TransactionRepository($this->mockTransactionModel);
+    }
+
+    public function tearDown(): void
+    {
+        Mockery::close();
+    }
 
     public function testSaveInsertsTransactionSuccessfully()
     {
@@ -53,19 +70,5 @@ class TransactionRepositoryTest extends TestCase
         $this->transactionRepository->save($accountUuid, $transaction);
 
         $this->expectNotToPerformAssertions();
-    }
-
-    public function tearDown(): void
-    {
-        Mockery::close();
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->mockTransactionModel = Mockery::mock(\App\Model\Transaction::class);
-
-        $this->transactionRepository = new TransactionRepository($this->mockTransactionModel);
     }
 }

@@ -34,6 +34,6 @@ class TransactionRequest extends FormRequest
 
     public function transactionValue(): float
     {
-        return (float)$this->input('transaction_value');
+        return (float) $this->input('transaction_value');
     }
 }

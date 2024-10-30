@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Unit\Domain\Entity;
 
 use App\Domain\Entity\Transactions;
@@ -10,8 +12,8 @@ class TransactionsTest extends TestCase
     public function testCreate()
     {
         $data = [
-            (object)['id' => 1, 'amount' => 100],
-            (object)['id' => 2, 'amount' => 200],
+            (object) ['id' => 1, 'amount' => 100],
+            (object) ['id' => 2, 'amount' => 200],
         ];
 
         $transactions = Transactions::create($data);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Entity;
 
 use App\Domain\ValueObjects\Rate;
@@ -14,18 +16,6 @@ class TransactionFee
         private TransactionValue $originalValue,
     ) {
         $this->calculateCalculatedValue($originalValue);
-    }
-
-    private function calculateCalculatedValue(TransactionValue $value): void
-    {
-        $this->calculatedValue = $value;
-        if ($this->transactionRate()->isZero() || $value->isNegative()) {
-            return;
-        }
-
-        $divide = $this->transactionRate()->divide(100);
-        $multiply = $value->multiply($divide->value());
-        $this->calculatedValue = TransactionValue::create($value->add($multiply)->value());
     }
 
     public function transactionRate(): Rate
@@ -60,5 +50,17 @@ class TransactionFee
     public function calculatedValue(): TransactionValue
     {
         return $this->calculatedValue;
+    }
+
+    private function calculateCalculatedValue(TransactionValue $value): void
+    {
+        $this->calculatedValue = $value;
+        if ($this->transactionRate()->isZero() || $value->isNegative()) {
+            return;
+        }
+
+        $divide = $this->transactionRate()->divide(100);
+        $multiply = $value->multiply($divide->value());
+        $this->calculatedValue = TransactionValue::create($value->add($multiply)->value());
     }
 }

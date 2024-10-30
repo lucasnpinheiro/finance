@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Entity;
 
 use App\Domain\Exceptions\InsufficientBalanceException;
@@ -28,7 +30,7 @@ class Account
             'account_number' => $this->accountNumber()->value(),
             'balance' => $this->balance()->value(),
             'created_at' => $this->createdAt()->format('Y-m-d H:i:s'),
-            'transactions' => $this->transactions()->toArray()
+            'transactions' => $this->transactions()->toArray(),
         ];
     }
 
@@ -52,9 +54,33 @@ class Account
         return $this->transactions;
     }
 
+    public function updateBalanceDefault(Balance $balance): void
+    {
+        $this->balance = $balance;
+    }
+
+    public function processTransactions(): void
+    {
+        foreach ($this->transactions() as $transaction) {
+            $this->processTransaction($transaction);
+        }
+
+        $transactionErrors = $this->transactions()->filter(fn (Transaction $transaction) => $transaction->isFailed());
+
+        if (! $transactionErrors->isEmpty()) {
+            throw new InsufficientBalanceException();
+        }
+    }
+
+    public function addTransaction(Transaction $transaction): self
+    {
+        $this->transactions()->prepend($transaction);
+        return $this;
+    }
+
     private function processTransaction(Transaction $transaction): void
     {
-        if ($transaction->isSake() && !$this->balance()->canDebit($transaction->transactionFee()->calculatedValue())) {
+        if ($transaction->isSake() && ! $this->balance()->canDebit($transaction->transactionFee()->calculatedValue())) {
             $transaction->updateTransactionStatusFailed();
             return;
         }
@@ -74,29 +100,5 @@ class Account
                 $this->balance()->subtract($transaction->transactionFee()->calculatedValue())->value()
             );
         }
-    }
-
-    public function updateBalanceDefault(Balance $balance): void
-    {
-        $this->balance = $balance;
-    }
-
-    public function processTransactions(): void
-    {
-        foreach ($this->transactions() as $transaction) {
-            $this->processTransaction($transaction);
-        }
-
-        $transactionErrors = $this->transactions()->filter(fn(Transaction $transaction) => $transaction->isFailed());
-
-        if (!$transactionErrors->isEmpty()) {
-            throw new InsufficientBalanceException();
-        }
-    }
-
-    public function addTransaction(Transaction $transaction): self
-    {
-        $this->transactions()->prepend($transaction);
-        return $this;
     }
 }

@@ -10,12 +10,16 @@ use BaseValueObject\MoneyValueObject;
 class Balance extends MoneyValueObject
 {
     /**
-     * @param string $value
      * @return static
      */
-    public static function create(string $value): self
+    public static function create(float|string $value): self
     {
-        return new self($value);
+        return new self((string)$value);
+    }
+
+    public function canDebit(MoneyValueObject $amount): bool
+    {
+        return $this->value() >= $amount->value();
     }
 
     protected function validate(string $value): bool
@@ -25,10 +29,5 @@ class Balance extends MoneyValueObject
             throw new ValueException();
         }
         return true;
-    }
-
-    public function canDebit(MoneyValueObject $amount): bool
-    {
-        return $this->value() >= $amount->value();
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Enum;
 
 enum TransactionStatusEnum: string
@@ -17,6 +19,7 @@ enum TransactionStatusEnum: string
     {
         return self::from(strtoupper($value));
     }
+
     public static function values(): array
     {
         return array_column(self::cases(), 'value');

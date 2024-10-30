@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HyperfTest\Unit\Domain\Services;
 
 use App\Domain\Entity\Transaction;
 use App\Domain\Entity\TransactionFee;
 use App\Domain\Enum\TransactionTypeEnum;
 use App\Domain\Services\TransactionDeposit;
-use App\Domain\Services\TransactionSake;
 use App\Domain\ValueObjects\Message;
 use App\Domain\ValueObjects\Rate;
 use App\Domain\ValueObjects\TransactionValue;

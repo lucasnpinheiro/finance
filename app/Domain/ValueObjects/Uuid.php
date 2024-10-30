@@ -22,7 +22,7 @@ class Uuid extends StringValueObject
 
     protected function validate(string $value): bool
     {
-        if (!uuid4::isValid($value)) {
+        if (! uuid4::isValid($value)) {
             throw new UuidException();
         }
         return true;

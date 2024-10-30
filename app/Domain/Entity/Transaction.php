@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Entity;
 
 use App\Domain\Enum\TransactionStatusEnum;
@@ -13,6 +15,7 @@ use DateTimeImmutable;
 class Transaction
 {
     private TransactionStatusEnum $transactionStatus = TransactionStatusEnum::IN_PROCESSING;
+
     private TransactionFee $transactionFee;
 
     private function __construct(
@@ -120,5 +123,4 @@ class Transaction
     {
         return $this->transactionType === TransactionTypeEnum::SAKE;
     }
-
 }
