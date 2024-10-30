@@ -8,7 +8,6 @@ use App\Domain\Enum\TransactionTypeEnum;
 use App\Domain\ValueObjects\TransactionValue;
 use App\Repositories\Contracts\AccountRepositoryInterface;
 use DateTimeImmutable;
-use Exception;
 
 class AccountFactory
 {
@@ -32,11 +31,6 @@ class AccountFactory
             TransactionValue::create($transactionValue),
             new DateTimeImmutable()
         );
-
-        if (!$transactionFactory instanceof Transaction) {
-            throw new Exception('Failed to create transaction entity');
-        }
-
         return $transactionFactory;
     }
 }
