@@ -5,20 +5,27 @@ namespace App\Domain\Entity;
 use App\Domain\Enum\TransactionStatusEnum;
 use App\Domain\Enum\TransactionTypeEnum;
 use App\Domain\ValueObjects\Message;
+use App\Domain\ValueObjects\Rate;
 use App\Domain\ValueObjects\TransactionValue;
 use App\Domain\ValueObjects\Uuid;
 use DateTimeImmutable;
 
 class Transaction
 {
+    private TransactionStatusEnum $transactionStatus = TransactionStatusEnum::IN_PROCESSING;
+    private TransactionFee $transactionFee;
+
     private function __construct(
         private TransactionTypeEnum $transactionType,
         private TransactionValue $transactionValue,
         private DateTimeImmutable $createdAt,
         private Message $message,
-        private Uuid $uuid,
-        private TransactionStatusEnum $transactionStatus = TransactionStatusEnum::IN_PROCESSING,
+        private Uuid $uuid
     ) {
+        $this->transactionFee = TransactionFee::create(
+            Rate::create('0'),
+            $transactionValue,
+        );
     }
 
     public static function create(
@@ -36,6 +43,11 @@ class Transaction
         );
     }
 
+    public function transactionFee(): TransactionFee
+    {
+        return $this->transactionFee;
+    }
+
     public function createdAt(): DateTimeImmutable
     {
         return $this->createdAt;
@@ -50,6 +62,7 @@ class Transaction
             'transaction_value' => $this->transactionValue()->value(),
             'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
             'message' => $this->message()->value(),
+            'transaction_fee' => $this->transactionFee()->toArray(),
         ];
     }
 
@@ -91,6 +104,11 @@ class Transaction
     public function isFailed(): bool
     {
         return $this->transactionStatus === TransactionStatusEnum::FAILED;
+    }
+
+    public function updateTransactionFee(TransactionFee $transactionFee): void
+    {
+        $this->transactionFee = $transactionFee;
     }
 
 }
