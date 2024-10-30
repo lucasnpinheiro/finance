@@ -1,25 +1,40 @@
 #!/bin/bash
 
 case "$1" in
+  install)
+    echo "Iniciando a instalação do docker compose e as configurações iniciais do projeto..."
+    docker compose down --remove-orphans
+    docker compose up -d --build
+    sleep 3
+    docker compose exec finance php bin/hyperf.php migrate
+    sleep 1
+    docker compose exec finance php bin/hyperf.php migrate:refresh --seed
+    sleep 1
+    docker compose run k6 run --vus 1 --duration 1m --out json=/results/k6-results.json --out csv=/results/k6-results.csv /scripts/load_test.js
+    ;;
   start)
     echo "Iniciando os serviços do Docker Compose..."
     docker compose up -d --build
     ;;
   stop)
     echo "Parando os containers..."
-    docker compose down
+    docker compose down --remove-orphans
     ;;
   restart)
-      echo "Parando os containers..."
-      docker compose down
+      echo "Restart dos containers..."
+      docker compose down --remove-orphans
       docker compose up -d
       ;;
   test)
       echo "Executando test no serviço finance..."
       docker compose exec finance composer run-script test
       ;;
+  testK6)
+      echo "Executando test no serviço finance utilizando o K6..."
+      docker compose run k6 run --vus 1 --duration 1m --out json=/results/k6-results.json --out csv=/results/k6-results.csv /scripts/load_test.js
+      ;;
   migrations)
-    echo "Executando test no serviço finance..."
+    echo "Executando migrations no serviço finance..."
     docker compose exec finance php bin/hyperf.php migrate
     docker compose exec finance php bin/hyperf.php migrate:refresh --seed
     ;;
@@ -28,18 +43,24 @@ case "$1" in
       docker compose exec finance composer run-script coverage
       ;;
   bash)
-      echo "Executando cobertura no serviço finance..."
+      echo "Executando linha bash no serviço finance..."
       docker exec -it finance bash
       ;;
   logs)
-    echo "Executando cobertura no serviço finance..."
+    echo "Executando logs no serviço finance..."
     docker-compose logs finance -f
     ;;
   *)
     echo "Comandos disponíveis:"
-    echo "  start      - Inicia os serviços do Docker Compose"
-    echo "  test       - Executa o comando 'test' no serviço finance"
-    echo "  coverage   - Executa o comando 'coverage' no serviço finance"
-    echo "  stop       - Para e remove os containers"
+    echo "  install      - Iniciando a instalação do docker compose e as configurações iniciais do projeto"
+    echo "  start        - Iniciando os serviços do Docker Compose"
+    echo "  stop         - Parando os containers"
+    echo "  restart      - Reiniciando os containers"
+    echo "  test         - Executando test no serviço finance"
+    echo "  testK6       - Executando test no serviço finance utilizando o K6"
+    echo "  migrations   - Executando migrations no serviço finance"
+    echo "  coverage     - Executando cobertura no serviço finance"
+    echo "  bash         - Executando linha bash no serviço finance"
+    echo "  logs         - Executando logs no serviço finance"
     ;;
 esac
