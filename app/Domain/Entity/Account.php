@@ -54,7 +54,7 @@ class Account
 
     private function processTransaction(Transaction $transaction): void
     {
-        if (!$this->balance()->canDebit($transaction->transactionValue())) {
+        if ($transaction->isSake() && !$this->balance()->canDebit($transaction->transactionFee()->calculatedValue())) {
             $transaction->updateTransactionStatusFailed();
             return;
         }
@@ -65,11 +65,20 @@ class Account
     private function updateBalance(Transaction $transaction): void
     {
         if ($transaction->isDeposit()) {
-            $this->balance = Balance::create($this->balance()->add($transaction->transactionValue())->value());
+            $this->balance = Balance::create(
+                $this->balance()->add($transaction->transactionFee()->calculatedValue())->value()
+            );
         }
         if ($transaction->isSake()) {
-            $this->balance = Balance::create($this->balance()->subtract($transaction->transactionValue())->value());
+            $this->balance = Balance::create(
+                $this->balance()->subtract($transaction->transactionFee()->calculatedValue())->value()
+            );
         }
+    }
+
+    public function updateBalanceDefault(Balance $balance): void
+    {
+        $this->balance = $balance;
     }
 
     public function processTransactions(): void

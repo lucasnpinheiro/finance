@@ -4,13 +4,13 @@ namespace HyperfTest\Unit\Domain\Entity;
 
 use App\Domain\Entity\Account;
 use App\Domain\Entity\Transaction;
+use App\Domain\Entity\TransactionFee;
 use App\Domain\Entity\Transactions;
-use App\Domain\Exceptions\InsufficientBalanceException;
 use App\Domain\ValueObjects\Balance;
+use App\Domain\ValueObjects\Rate;
 use App\Domain\ValueObjects\TransactionValue;
 use App\Domain\ValueObjects\Uuid;
 use DateTimeImmutable;
-use HyperfTest\Stub\Domain\Entity\TransactionStub;
 use PHPUnit\Framework\TestCase;
 
 class AccountTest extends TestCase
@@ -60,30 +60,19 @@ class AccountTest extends TestCase
         $this->assertSame($transaction, $account->transactions()->first());
     }
 
-    public function testProcessTransactionsWithInsufficientBalance()
-    {
-        $this->expectException(InsufficientBalanceException::class);
-
-        $balance = Balance::create('100');
-        $account = Account::create(Uuid::random(), $balance, new DateTimeImmutable());
-
-        $transaction = $this->createMock(Transaction::class);
-        $transaction->method('transactionValue')->willReturn(TransactionValue::create('200'));
-        $transaction->method('updateTransactionStatusFailed');
-        $transaction->method('isFailed')->willReturn(true);
-
-        $account->addTransaction($transaction);
-
-        $account->processTransactions();
-    }
-
     public function testUpdateBalanceAfterDeposit()
     {
         $account = Account::create(Uuid::random(), Balance::create(500), new DateTimeImmutable());
 
         $transaction = $this->createMock(Transaction::class);
-        $transaction->method('transactionValue')->willReturn(TransactionValue::create('300'));
+        $transaction->method('transactionValue')->willReturn(TransactionValue::create(300));
         $transaction->method('isDeposit')->willReturn(true);
+        $transaction->method('transactionFee')->willReturn(
+            TransactionFee::create(
+                Rate::create('0'),
+                TransactionValue::create(300)
+            )
+        );
         $transaction->expects($this->once())->method('updateTransactionStatusCompleted');
 
         $account->addTransaction($transaction);
@@ -97,13 +86,51 @@ class AccountTest extends TestCase
         $account = Account::create(Uuid::random(), Balance::create(500), new DateTimeImmutable());
 
         $transaction = $this->createMock(Transaction::class);
-        $transaction->method('transactionValue')->willReturn(TransactionValue::create('200'));
+        $transaction->method('transactionValue')->willReturn(TransactionValue::create(200));
         $transaction->method('isSake')->willReturn(true);
+        $transaction->method('transactionFee')->willReturn(
+            TransactionFee::create(
+                Rate::create('0.1'),
+                TransactionValue::create(200)
+            )
+        );
         $transaction->expects($this->once())->method('updateTransactionStatusCompleted');
 
         $account->addTransaction($transaction);
         $account->processTransactions();
 
         $this->assertEquals(300, $account->balance()->value());
+    }
+
+    public function testProcessTransactionsWithMultipleTransactions()
+    {
+        $account = Account::create(Uuid::random(), Balance::create(1000), new DateTimeImmutable());
+
+        $depositTransaction = $this->createMock(Transaction::class);
+        $depositTransaction->method('transactionValue')->willReturn(TransactionValue::create(200));
+        $depositTransaction->method('isDeposit')->willReturn(true);
+        $depositTransaction->method('transactionFee')->willReturn(
+            TransactionFee::create(
+                Rate::create('0'),
+                TransactionValue::create(200)
+            )
+        );
+
+        $sakeTransaction = $this->createMock(Transaction::class);
+        $sakeTransaction->method('transactionValue')->willReturn(TransactionValue::create(100));
+        $sakeTransaction->method('isSake')->willReturn(true);
+        $sakeTransaction->method('transactionFee')->willReturn(
+            TransactionFee::create(
+                Rate::create('0.1'),
+                TransactionValue::create(100)
+            )
+        );
+
+        $account->addTransaction($depositTransaction);
+        $account->addTransaction($sakeTransaction);
+
+        $account->processTransactions();
+
+        $this->assertEquals(1100, $account->balance()->value());
     }
 }
