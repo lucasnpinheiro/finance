@@ -13,7 +13,9 @@ declare(strict_types=1);
 use App\Controller\AccountController;
 use Hyperf\HttpServer\Router\Router;
 
-Router::post('/account', [AccountController::class,'index']);
+Router::post('/deposit', [AccountController::class,'index']);
+Router::post('/transfer', [AccountController::class,'index']);
+Router::post('/sake', [AccountController::class,'index']);
 
 Router::get('/favicon.ico', function () {
     return '';
