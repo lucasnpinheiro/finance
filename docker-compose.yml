@@ -73,6 +73,33 @@ services:
       - net
     restart: always
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=your_elastic_password  # Senha do usuário 'elastic'
+      - xpack.security.enabled=true                # Habilitar segurança
+    ports:
+      - "9200:9200"
+    networks:
+      - net
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.1
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic            # Usuário para autenticação
+      - ELASTICSEARCH_PASSWORD=your_elastic_password # Senha do usuário 'elastic'
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - net
+    restart: always
+
 networks:
   net:
 
