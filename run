@@ -18,6 +18,11 @@ case "$1" in
       echo "Executando test no serviço finance..."
       docker compose exec finance composer run-script test
       ;;
+  migrations)
+    echo "Executando test no serviço finance..."
+    docker compose exec finance php bin/hyperf.php migrate
+    docker compose exec finance php bin/hyperf.php migrate:refresh --seed
+    ;;
   coverage)
       echo "Executando cobertura no serviço finance..."
       docker compose exec finance composer run-script coverage
