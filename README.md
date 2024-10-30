@@ -1,63 +1,83 @@
 # Introduction
 
-This is a skeleton application using the Hyperf framework. This application is meant to be used as a starting place for those looking to get their feet wet with Hyperf Framework.
+Implementação de teste para projeto Finance
 
 # Requirements
 
-Hyperf has some requirements for the system environment, it can only run under Linux and Mac environment, but due to the development of Docker virtualization technology, Docker for Windows can also be used as the running environment under Windows.
+- Utilizar o Docker e Docker Compose
+- Banco de dados MariaDB
+- PHP 8.3
+- Framework HyperF 3.1
 
-The various versions of Dockerfile have been prepared for you in the [hyperf/hyperf-docker](https://github.com/hyperf/hyperf-docker) project, or directly based on the already built [hyperf/hyperf](https://hub.docker.com/r/hyperf/hyperf) Image to run.
+## Iniciar projeto
 
-When you don't want to use Docker as the basis for your running environment, you need to make sure that your operating environment meets the following requirements:  
+Para facilitar o inicialização do projeto foi criado um arquivo na raiz do projeto chamado run.
 
- - PHP >= 8.1
- - Any of the following network engines
-   - Swoole PHP extension >= 5.0，with `swoole.use_shortname` set to `Off` in your `php.ini`
-   - Swow PHP extension >= 1.3
- - JSON PHP extension
- - Pcntl PHP extension
- - OpenSSL PHP extension （If you need to use the HTTPS）
- - PDO PHP extension （If you need to use the MySQL Client）
- - Redis PHP extension （If you need to use the Redis Client）
- - Protobuf PHP extension （If you need to use the gRPC Server or Client）
-
-# Installation using Composer
-
-The easiest way to create a new Hyperf project is to use [Composer](https://getcomposer.org/). If you don't have it already installed, then please install as per [the documentation](https://getcomposer.org/download/).
-
-To create your new Hyperf project:
-
+- Dar permissão de execução do arquivo.
 ```bash
-composer create-project hyperf/hyperf-skeleton path/to/install
+chomod +x run 
 ```
 
-If your development environment is based on Docker you can use the official Composer image to create a new Hyperf project:
-
+Iniciar o docker compose.
 ```bash
-docker run --rm -it -v $(pwd):/app composer create-project --ignore-platform-reqs hyperf/hyperf-skeleton path/to/install
+./run install
 ```
 
-# Getting started
+Acessar o banco de dados
+[http://localhost:8080](http://localhost:8080)
 
-Once installed, you can run the server immediately using the command below.
-
-```bash
-cd path/to/install
-php bin/hyperf.php start
+Teste de transações com DEPOSIT
+```curl
+curl --request POST \
+  --url http://localhost:9501/transaction \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/10.1.1' \
+  --data '{
+	"account_number" : "68c2c56d-8310-4628-b886-a82fccc289f5",
+	"transaction_type" : "DEPOSIT",
+	"transaction_value" : 100
+}'
 ```
 
-Or if in a Docker based environment you can use the `docker-compose.yml` provided by the template:
-
-```bash
-cd path/to/install
-docker-compose up
+Teste de transações com SAKE
+```curl
+curl --request POST \
+  --url http://localhost:9501/transaction \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/10.1.1' \
+  --data '{
+	"account_number" : "68c2c56d-8310-4628-b886-a82fccc289f5",
+	"transaction_type" : "SAKE",
+	"transaction_value" : 100
+}'
 ```
 
-This will start the cli-server on port `9501`, and bind it to all network interfaces. You can then visit the site at `http://localhost:9501/` which will bring up Hyperf default home page.
+Teste de transações com TRANSFER
+```curl
+curl --request POST \
+  --url http://localhost:9501/transfer \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/10.1.1' \
+  --data '{
+	"account_number_origin" : "7557f6da-61f7-4e9c-8479-88aa52ed2050",
+	"account_number_destination" : "68c2c56d-8310-4628-b886-a82fccc289f5",
+	"transaction_value" : 100
+}'
+```
 
-## Hints
+Rodando test.
+```bash
+./run test
+```
 
-- A nice tip is to rename `hyperf-skeleton` of files like `composer.json` and `docker-compose.yml` to your actual project name.
-- Take a look at `config/routes.php` and `app/Controller/IndexController.php` to see an example of a HTTP entrypoint.
+Rodando test cobertura.
+```bash
+./run coverage
+```
 
-**Remember:** you can always replace the contents of this README.md file to something that fits your project description.
+Rodando test K6.
+```bash
+./run testK6
+```
+
+![test-K6.png](test-K6.png)
