@@ -6,8 +6,6 @@ namespace App\Model;
 
 use Hyperf\DbConnection\Model\Model;
 
-/**
- */
 class Transaction extends Model
 {
     protected ?string $table = 'transactions';
