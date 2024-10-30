@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 use App\Actions\Transaction\Contracts\TransactionActionInterface;
 use App\Actions\Transaction\TransactionAction;
+use App\Actions\Transfer\Contracts\TransferActionInterface;
+use App\Actions\Transfer\TransferAction;
 use App\Repositories\AccountRepository;
 use App\Repositories\Contracts\AccountRepositoryInterface;
 use App\Repositories\Contracts\TransactionRepositoryInterface;
@@ -19,6 +21,7 @@ use App\Repositories\TransactionRepository;
 
 return [
     TransactionActionInterface::class => TransactionAction::class,
+    TransferActionInterface::class => TransferAction::class,
     AccountRepositoryInterface::class => AccountRepository::class,
     TransactionRepositoryInterface::class => TransactionRepository::class,
 ];

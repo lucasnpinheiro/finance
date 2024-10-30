@@ -11,10 +11,11 @@ declare(strict_types=1);
  */
 
 use App\Controller\TransactionController;
+use App\Controller\TransferController;
 use Hyperf\HttpServer\Router\Router;
 
 Router::post('/transaction', [TransactionController::class,'index']);
-Router::post('/transfer', [TransactionController::class,'index']);
+Router::post('/transfer', [TransferController::class, 'index']);
 
 Router::get('/favicon.ico', function () {
     return '';
