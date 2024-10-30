@@ -5,6 +5,8 @@ namespace App\Domain\Factory;
 use App\Domain\Entity\Account;
 use App\Domain\Entity\Transaction;
 use App\Domain\Enum\TransactionTypeEnum;
+use App\Domain\Services\TransactionDeposit;
+use App\Domain\Services\TransactionSake;
 use App\Domain\ValueObjects\TransactionValue;
 use App\Repositories\Contracts\AccountRepositoryInterface;
 use DateTimeImmutable;
@@ -21,7 +23,17 @@ class AccountFactory
         float $transactionValue
     ): Account {
         $account = $this->accountRepository->findAccountById($accountNumber);
-        return $account->addTransaction($this->createTransactionEntity($transactionType, $transactionValue));
+        $transaction = $this->createTransactionEntity($transactionType, $transactionValue);
+        return $account->addTransaction($transaction);
+    }
+
+    private function applyTransactionFee(Transaction $transaction): Transaction
+    {
+        return match ($transaction->transactionType()->value()) {
+            TransactionTypeEnum::DEPOSIT->value() => TransactionDeposit::calculateFee($transaction),
+            TransactionTypeEnum::SAKE->value() => TransactionSake::calculateFee($transaction),
+            default => $transaction,
+        };
     }
 
     private function createTransactionEntity(string $transactionType, float $transactionValue): Transaction

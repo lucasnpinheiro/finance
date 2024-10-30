@@ -111,4 +111,14 @@ class Transaction
         $this->transactionFee = $transactionFee;
     }
 
+    public function isDeposit(): bool
+    {
+        return $this->transactionType === TransactionTypeEnum::DEPOSIT;
+    }
+
+    public function isSake(): bool
+    {
+        return $this->transactionType === TransactionTypeEnum::SAKE;
+    }
+
 }

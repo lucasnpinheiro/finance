@@ -6,7 +6,6 @@ use App\Domain\Exceptions\InsufficientBalanceException;
 use App\Domain\ValueObjects\Balance;
 use App\Domain\ValueObjects\Uuid;
 use DateTimeImmutable;
-use Exception;
 
 class Account
 {
@@ -65,7 +64,12 @@ class Account
 
     private function updateBalance(Transaction $transaction): void
     {
-        $this->balance = Balance::create($this->balance()->subtract($transaction->transactionValue())->value());
+        if ($transaction->isDeposit()) {
+            $this->balance = Balance::create($this->balance()->add($transaction->transactionValue())->value());
+        }
+        if ($transaction->isSake()) {
+            $this->balance = Balance::create($this->balance()->subtract($transaction->transactionValue())->value());
+        }
     }
 
     public function processTransactions(): void

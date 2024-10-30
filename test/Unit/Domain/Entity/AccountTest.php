@@ -1,6 +1,7 @@
 <?php
 
 namespace HyperfTest\Unit\Domain\Entity;
+
 use App\Domain\Entity\Account;
 use App\Domain\Entity\Transaction;
 use App\Domain\Entity\Transactions;
@@ -9,6 +10,7 @@ use App\Domain\ValueObjects\Balance;
 use App\Domain\ValueObjects\TransactionValue;
 use App\Domain\ValueObjects\Uuid;
 use DateTimeImmutable;
+use HyperfTest\Stub\Domain\Entity\TransactionStub;
 use PHPUnit\Framework\TestCase;
 
 class AccountTest extends TestCase
@@ -58,21 +60,6 @@ class AccountTest extends TestCase
         $this->assertSame($transaction, $account->transactions()->first());
     }
 
-    public function testProcessTransactionsWithSufficientBalance()
-    {
-        $balance = Balance::create('1000');
-        $account = Account::create(Uuid::random(), $balance, new DateTimeImmutable());
-
-        $transaction = $this->createMock(Transaction::class);
-        $transaction->method('transactionValue')->willReturn(TransactionValue::create('200'));
-        $transaction->expects($this->once())->method('updateTransactionStatusCompleted');
-
-        $account->addTransaction($transaction);
-        $account->processTransactions();
-
-        $this->assertEquals(800, $account->balance()->value());
-    }
-
     public function testProcessTransactionsWithInsufficientBalance()
     {
         $this->expectException(InsufficientBalanceException::class);
@@ -88,5 +75,35 @@ class AccountTest extends TestCase
         $account->addTransaction($transaction);
 
         $account->processTransactions();
+    }
+
+    public function testUpdateBalanceAfterDeposit()
+    {
+        $account = Account::create(Uuid::random(), Balance::create(500), new DateTimeImmutable());
+
+        $transaction = $this->createMock(Transaction::class);
+        $transaction->method('transactionValue')->willReturn(TransactionValue::create('300'));
+        $transaction->method('isDeposit')->willReturn(true);
+        $transaction->expects($this->once())->method('updateTransactionStatusCompleted');
+
+        $account->addTransaction($transaction);
+        $account->processTransactions();
+
+        $this->assertEquals(800, $account->balance()->value());
+    }
+
+    public function testUpdateBalanceAfterSake()
+    {
+        $account = Account::create(Uuid::random(), Balance::create(500), new DateTimeImmutable());
+
+        $transaction = $this->createMock(Transaction::class);
+        $transaction->method('transactionValue')->willReturn(TransactionValue::create('200'));
+        $transaction->method('isSake')->willReturn(true);
+        $transaction->expects($this->once())->method('updateTransactionStatusCompleted');
+
+        $account->addTransaction($transaction);
+        $account->processTransactions();
+
+        $this->assertEquals(300, $account->balance()->value());
     }
 }

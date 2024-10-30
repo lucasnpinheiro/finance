@@ -2,7 +2,6 @@
 
 namespace HyperfTest\Unit\Domain\Entity;
 
-
 use App\Domain\Entity\Transaction;
 use App\Domain\Entity\TransactionFee;
 use App\Domain\Enum\TransactionStatusEnum;
@@ -110,5 +109,31 @@ class TransactionTest extends TestCase
         $transaction->updateTransactionStatusFailed();
 
         $this->assertTrue($transaction->isFailed());
+    }
+
+    public function testIsDeposit()
+    {
+        $transaction = Transaction::create(
+            TransactionTypeEnum::DEPOSIT,
+            TransactionValue::create('100'),
+            new DateTimeImmutable(),
+            Message::create('Deposit transaction')
+        );
+
+        $this->assertTrue($transaction->isDeposit());
+        $this->assertFalse($transaction->isSake());
+    }
+
+    public function testIsSake()
+    {
+        $transaction = Transaction::create(
+            TransactionTypeEnum::SAKE,
+            TransactionValue::create('100'),
+            new DateTimeImmutable(),
+            Message::create('Sake transaction')
+        );
+
+        $this->assertTrue($transaction->isSake());
+        $this->assertFalse($transaction->isDeposit());
     }
 }
