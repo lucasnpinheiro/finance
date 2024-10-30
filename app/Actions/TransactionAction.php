@@ -5,21 +5,17 @@ namespace App\Actions;
 use App\Actions\Contracts\TransactionActionInterface;
 use App\Domain\Entity\Account;
 use App\Domain\Entity\Transaction;
+use App\Domain\Exceptions\InsufficientBalanceException;
 use App\Repositories\Contracts\AccountRepositoryInterface;
 use App\Repositories\Contracts\TransactionRepositoryInterface;
 use Throwable;
 
 class TransactionAction implements TransactionActionInterface
 {
-    private AccountRepositoryInterface $accountRepository;
-    private TransactionRepositoryInterface $transactionRepository;
-
     public function __construct(
-        AccountRepositoryInterface $accountRepository,
-        TransactionRepositoryInterface $transactionRepository
+        private AccountRepositoryInterface $accountRepository,
+        private TransactionRepositoryInterface $transactionRepository
     ) {
-        $this->accountRepository = $accountRepository;
-        $this->transactionRepository = $transactionRepository;
     }
 
     public function handle(Account $account): Account
@@ -27,7 +23,7 @@ class TransactionAction implements TransactionActionInterface
         try {
             $account->processTransactions();
             $this->accountRepository->save($account);
-        } catch (Throwable $th) {
+        } catch (InsufficientBalanceException $th) {
             $this->accountRepository->save($account);
             throw $th;
         }
