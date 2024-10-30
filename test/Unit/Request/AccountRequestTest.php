@@ -59,13 +59,10 @@ class AccountRequestTest extends TestCase
     {
         parent::setUp();
 
-        // Cria um mock para o container
         $container = Mockery::mock(ContainerInterface::class);
 
-        // Cria um mock para o ServerRequestInterface
         $serverRequest = Mockery::mock(ServerRequestInterface::class);
 
-        // Injetando o container e o request mockado na AccountRequest
         $this->request = new AccountRequest($container, $serverRequest);
     }
 
