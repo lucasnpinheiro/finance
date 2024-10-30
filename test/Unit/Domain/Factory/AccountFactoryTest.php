@@ -2,10 +2,11 @@
 
 namespace HyperfTest\Unit\Domain\Factory;
 
-
 use App\Domain\Entity\Account;
 use App\Domain\Enum\TransactionTypeEnum;
 use App\Domain\Factory\AccountFactory;
+use App\Domain\Services\TransactionDeposit;
+use App\Domain\Services\TransactionSake;
 use App\Repositories\Contracts\AccountRepositoryInterface;
 use HyperfTest\Stub\Domain\Entity\AccountStub;
 use PHPUnit\Framework\TestCase;
@@ -23,7 +24,7 @@ class AccountFactoryTest extends TestCase
             ->willReturn($account);
 
         $transactionType = TransactionTypeEnum::DEPOSIT->value();
-        $transactionValue = '10.00';
+        $transactionValue = 10.00;
 
         $result = $this->accountFactory->create(
             $account->accountNumber()->value(),
@@ -41,12 +42,12 @@ class AccountFactoryTest extends TestCase
 
     public function testCreateTransactionEntityThrowsExceptionOnFailure(): void
     {
-        $account = AccountStub::random(); // Cria uma conta usando o stub
+        $account = AccountStub::random();
         $this->accountRepository->method('findAccountById')
             ->willReturn($account);
 
         $transactionType = 'INVALID_TYPE';
-        $transactionValue = '10.00';
+        $transactionValue = 10.00;
 
         $this->expectException(ValueError::class);
 
@@ -55,6 +56,44 @@ class AccountFactoryTest extends TestCase
             $transactionType,
             $transactionValue
         );
+    }
+
+    public function testApplyTransactionFeeForDeposit(): void
+    {
+        $account = AccountStub::random();
+        $this->accountRepository->method('findAccountById')
+            ->willReturn($account);
+
+        $transactionType = TransactionTypeEnum::DEPOSIT->value();
+        $transactionValue = 100.00;
+
+        $transaction = $this->accountFactory->create(
+            $account->accountNumber()->value(),
+            $transactionType,
+            $transactionValue
+        )->transactions()[0];
+
+        $expectedValueAfterFee = TransactionDeposit::calculateFee($transaction)->transactionValue()->value();
+        $this->assertEquals($expectedValueAfterFee, $transaction->transactionValue()->value());
+    }
+
+    public function testApplyTransactionFeeForSake(): void
+    {
+        $account = AccountStub::random();
+        $this->accountRepository->method('findAccountById')
+            ->willReturn($account);
+
+        $transactionType = TransactionTypeEnum::SAKE->value();
+        $transactionValue = 100.00;
+
+        $transaction = $this->accountFactory->create(
+            $account->accountNumber()->value(),
+            $transactionType,
+            $transactionValue
+        )->transactions()[0];
+
+        $expectedValueAfterFee = TransactionSake::calculateFee($transaction)->transactionValue()->value();
+        $this->assertEquals($expectedValueAfterFee, $transaction->transactionValue()->value());
     }
 
     protected function setUp(): void

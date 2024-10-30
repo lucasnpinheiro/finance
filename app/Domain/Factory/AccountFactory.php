@@ -43,6 +43,6 @@ class AccountFactory
             TransactionValue::create($transactionValue),
             new DateTimeImmutable()
         );
-        return $transactionFactory;
+        return $this->applyTransactionFee($transactionFactory);
     }
 }
