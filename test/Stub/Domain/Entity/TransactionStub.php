@@ -47,4 +47,32 @@ class TransactionStub
 
         return $transaction;
     }
+
+    public static function deposit(): Transaction
+    {
+        $transaction = Transaction::create(
+            TransactionTypeEnum::DEPOSIT,
+            TransactionValue::create('10.00'),
+            (new DateTimeImmutable()),
+            Message::create('')
+        );
+
+        $transaction->updateTransactionStatusCompleted();
+
+        return $transaction;
+    }
+
+    public static function sake(): Transaction
+    {
+        $transaction = Transaction::create(
+            TransactionTypeEnum::SAKE,
+            TransactionValue::create('10.00'),
+            (new DateTimeImmutable()),
+            Message::create('')
+        );
+
+        $transaction->updateTransactionStatusCompleted();
+
+        return $transaction;
+    }
 }
