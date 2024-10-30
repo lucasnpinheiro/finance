@@ -30,7 +30,7 @@ class TransactionActionTest extends TestCase
                 ->with($this->equalTo($account->accountNumber()), $this->equalTo($transaction));
         }
 
-        $result = $this->transactionAction->handle($account);
+        $result = $this->transactionAction->handler($account);
         $this->assertEquals($account, $result);
     }
 

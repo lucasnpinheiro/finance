@@ -18,7 +18,7 @@ class TransactionAction implements TransactionActionInterface
     ) {
     }
 
-    public function handle(Account $account): Account
+    public function handler(Account $account): Account
     {
         try {
             $account->processTransactions();

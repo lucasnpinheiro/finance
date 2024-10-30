@@ -31,7 +31,7 @@ class AccountController extends AbstractController
             $request->transactionValue()
         );
 
-        $process = $this->transactionAction->handle($factory);
+        $process = $this->transactionAction->handler($factory);
 
         return $process->toArray();
     }

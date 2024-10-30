@@ -47,7 +47,7 @@ class AccountControllerTest extends TestCase
             ->with('12345678-1234-1234-1234-123456789012', 'deposit', '100')
             ->andReturn($account);
 
-        $this->transactionAction->shouldReceive('handle')
+        $this->transactionAction->shouldReceive('handler')
             ->with($account)
             ->andReturn($account);
 
