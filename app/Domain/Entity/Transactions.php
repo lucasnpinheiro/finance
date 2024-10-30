@@ -13,10 +13,10 @@ class Transactions extends Collection
 
     public function toArray(): array
     {
-        $itens = [];
+        $items = [];
         foreach (parent::toArray() as $item) {
-            $itens[] = $item->toArray();
+            $items[] = $item->toArray();
         }
-        return $itens;
+        return $items;
     }
 }
